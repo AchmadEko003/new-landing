@@ -201,63 +201,63 @@ const form = ref({
 const isSubmitting = ref(false)
 
 // Subject options
-const subjectOptions = [
-  { label: 'Konsultasi Perjalanan', value: 'consultation' },
-  { label: 'Booking & Reservasi', value: 'booking' },
-  { label: 'Keluhan & Saran', value: 'complaint' },
-  { label: 'Kerjasama & Partnership', value: 'partnership' },
-  { label: 'Media & Press', value: 'media' },
-  { label: 'Lainnya', value: 'other' }
-]
+// const subjectOptions = [
+//   { label: 'Konsultasi Perjalanan', value: 'consultation' },
+//   { label: 'Booking & Reservasi', value: 'booking' },
+//   { label: 'Keluhan & Saran', value: 'complaint' },
+//   { label: 'Kerjasama & Partnership', value: 'partnership' },
+//   { label: 'Media & Press', value: 'media' },
+//   { label: 'Lainnya', value: 'other' }
+// ]
 
 // FAQ items
-const faqItems = [
-  {
-    name: 'Bagaimana cara melakukan booking trip?',
-    content: 'Anda dapat melakukan booking melalui website kami dengan memilih destinasi dan tanggal keberangkatan. Tim kami akan menghubungi Anda untuk konfirmasi dalam 24 jam.'
-  },
-  {
-    name: 'Apakah ada jaminan uang kembali jika trip dibatalkan?',
-    content: 'Ya, kami memiliki kebijakan pengembalian dana yang fleksibel. Pembatalan lebih dari 14 hari sebelum keberangkatan mendapat pengembalian 100% dikurangi biaya admin.'
-  },
-  {
-    name: 'Apa yang sudah termasuk dalam paket trip?',
-    content: 'Paket trip kami biasanya sudah termasuk akomodasi, transportasi lokal, guide berpengalaman, dan beberapa aktivitas. Detail lengkap tersedia di halaman masing-masing trip.'
-  },
-  {
-    name: 'Apakah trip cocok untuk pemula yang baru pertama kali traveling?',
-    content: 'Tentu saja! Kami memiliki berbagai level trip dari pemula hingga advanced. Tim guide kami sangat berpengalaman dalam mendampingi first-time travelers.'
-  },
-  {
-    name: 'Bagaimana jika saya memiliki kebutuhan khusus atau diet tertentu?',
-    content: 'Kami akan mengakomodasi kebutuhan khusus Anda. Silakan informasikan kepada tim kami saat booking atau melalui form kontak ini.'
-  }
-]
+// const faqItems = [
+//   {
+//     name: 'Bagaimana cara melakukan booking trip?',
+//     content: 'Anda dapat melakukan booking melalui website kami dengan memilih destinasi dan tanggal keberangkatan. Tim kami akan menghubungi Anda untuk konfirmasi dalam 24 jam.'
+//   },
+//   {
+//     name: 'Apakah ada jaminan uang kembali jika trip dibatalkan?',
+//     content: 'Ya, kami memiliki kebijakan pengembalian dana yang fleksibel. Pembatalan lebih dari 14 hari sebelum keberangkatan mendapat pengembalian 100% dikurangi biaya admin.'
+//   },
+//   {
+//     name: 'Apa yang sudah termasuk dalam paket trip?',
+//     content: 'Paket trip kami biasanya sudah termasuk akomodasi, transportasi lokal, guide berpengalaman, dan beberapa aktivitas. Detail lengkap tersedia di halaman masing-masing trip.'
+//   },
+//   {
+//     name: 'Apakah trip cocok untuk pemula yang baru pertama kali traveling?',
+//     content: 'Tentu saja! Kami memiliki berbagai level trip dari pemula hingga advanced. Tim guide kami sangat berpengalaman dalam mendampingi first-time travelers.'
+//   },
+//   {
+//     name: 'Bagaimana jika saya memiliki kebutuhan khusus atau diet tertentu?',
+//     content: 'Kami akan mengakomodasi kebutuhan khusus Anda. Silakan informasikan kepada tim kami saat booking atau melalui form kontak ini.'
+//   }
+// ]
 
 // Form submission
-const submitForm = async () => {
-  isSubmitting.value = true
+// const submitForm = async () => {
+//   isSubmitting.value = true
 
-  try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
+//   try {
+//     // Simulate API call
+//     await new Promise(resolve => setTimeout(resolve, 2000))
 
-    // Reset form
-    form.value = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    }
+//     // Reset form
+//     form.value = {
+//       firstName: '',
+//       lastName: '',
+//       email: '',
+//       phone: '',
+//       subject: '',
+//       message: ''
+//     }
 
-    // Show success message (you can use a toast notification here)
-    alert('Pesan berhasil dikirim! Tim kami akan menghubungi Anda segera.')
-  } catch (error) {
-    alert('Terjadi kesalahan. Silakan coba lagi.')
-  } finally {
-    isSubmitting.value = false
-  }
-}
+//     // Show success message (you can use a toast notification here)
+//     alert('Pesan berhasil dikirim! Tim kami akan menghubungi Anda segera.')
+//   } catch (error) {
+//     alert('Terjadi kesalahan. Silakan coba lagi.')
+//   } finally {
+//     isSubmitting.value = false
+//   }
+// }
 </script>

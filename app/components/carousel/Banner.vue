@@ -30,7 +30,7 @@ const prev = () => {
   }
 }
 
-const { data: bannersData, pending } = useLazyFetch<IResponseList<IBanner>>(`${baseUrl}Banner`)
+const { data: bannersData, pending } = useLazyFetch<IResponseList<IBanner>>(`${baseUrl}/Banner`)
 </script>
 
 <template>
