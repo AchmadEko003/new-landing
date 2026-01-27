@@ -3,6 +3,7 @@ import type { IResponseList } from '~~/shared/interface/IResponse'
 import type { IFaq } from '~~/shared/interface/IFaq'
 
 const baseUrl = useRuntimeConfig().public.apiBase
+
 const { data, pending, error, refresh } = await useLazyFetch<IResponseList<IFaq>>(`${baseUrl}/Faq`, {
   method: 'GET',
   key: 'faq-data'

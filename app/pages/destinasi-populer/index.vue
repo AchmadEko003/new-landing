@@ -34,9 +34,7 @@ const reformattedData = computed(() => {
     return []
   }
 
-  const result = convertToImage(data.value?.data)
-
-  console.log(result)
+  const result = homeData.value?.country ? data.value?.data : convertToImage(data.value?.data)
 
   return result
 })
