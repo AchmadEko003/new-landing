@@ -12,7 +12,7 @@ const { y } = useWindowScroll({
   behavior: 'smooth'
 })
 
-const { data: pengalamanUnikData, pending: pengalamanUnikPending } = await useFetch<
+const { data: pengalamanUnikData } = await useLazyFetch<
   IResponse<IUniqueExperience[]>
 >(() => `${baseUrl}UniqueExperience`, {
   key: `unique-experience${categoryUid.value ? '-' + categoryUid.value : ''}`,

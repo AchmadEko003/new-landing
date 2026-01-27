@@ -12,7 +12,7 @@ const { width } = useWindowSize()
 
 const store = useCountryStore()
 
-const { data } = await useAsyncData('home', async () => {
+const { data } = await useLazyAsyncData('home', async () => {
   const [countryRes, favLocationRes, uniqueRes, tripRes] = await Promise.allSettled([
     $fetch<IResponseList<ICountry>>(`${baseUrl}/Country/country.list`),
     $fetch<IResponseList<IFavoriteLocation>>(`${baseUrl}/FavouriteLocation`),
@@ -31,7 +31,7 @@ const { data } = await useAsyncData('home', async () => {
   const uniqueExperienceTemp: IUniqueExperience[] | undefined
     = uniqueRes.status === 'fulfilled' ? uniqueRes.value?.data?.slice(0, 14) : []
   const tripTemp: ITrip[] | undefined
-    = tripRes.status === 'fulfilled' ? tripRes.value?.data?.slice(0, 10): []
+    = tripRes.status === 'fulfilled' ? tripRes.value?.data?.slice(0, 10) : []
 
   store.countryList = countryTemp
 
