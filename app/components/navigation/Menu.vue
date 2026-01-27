@@ -48,7 +48,7 @@ const items = ref<NavigationMenuItem[]>([
   },
   {
     label: 'Trip Saya',
-    to: '/booking/detail',
+    to: '/book/detail',
     class: 'hover:text-primary'
   },
   {

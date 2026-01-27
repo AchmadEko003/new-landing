@@ -219,7 +219,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/booking/detail"
+                to="/book/detail"
                 class="text-gray-600 hover:text-primary transition-colors"
               >
                 Trip Saya
