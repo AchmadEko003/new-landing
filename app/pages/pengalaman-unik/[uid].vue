@@ -15,7 +15,7 @@ const title = computed(() => {
     .join(' ')
 })
 
-const { data: detailData, pending } = useFetch<IResponse<IUniqueExperienceDetail>>(() => `${baseUrl}UniqueExperience/${uid.value}`)
+const { data: detailData, pending } = useFetch<IResponse<IUniqueExperienceDetail>>(() => `${baseUrl}/UniqueExperience/${uid.value}`)
 
 const bannerList = computed(() => {
   return detailData?.value?.data?.bannerList?.map(item => `/unique-experience/${item}.jpeg`) || []

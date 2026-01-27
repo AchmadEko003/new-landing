@@ -14,7 +14,7 @@ const { y } = useWindowScroll({
 
 const { data: pengalamanUnikData } = await useLazyFetch<
   IResponse<IUniqueExperience[]>
->(() => `${baseUrl}UniqueExperience`, {
+>(() => `${baseUrl}/UniqueExperience`, {
   key: `unique-experience${categoryUid.value ? '-' + categoryUid.value : ''}`,
   query: {
     categoryUid
