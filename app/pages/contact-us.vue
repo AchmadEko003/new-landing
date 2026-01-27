@@ -21,7 +21,7 @@
       <div class="grid lg:grid-cols-2 gap-12">
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
           <ClientOnly>
-            <LeafletMap
+            <UtilLeafletMap
               :latitude="-6.187549"
               :longitude="106.7359901"
               :zoom="16"
@@ -44,7 +44,7 @@
                   </div>
                 </div>
               </template>
-            </LeafletMap>
+            </UtilLeafletMap>
           </ClientOnly>
         </div>
 
