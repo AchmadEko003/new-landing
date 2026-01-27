@@ -1,10 +1,10 @@
 export interface IBanner {
   /** Unique identifier of the banner */
-  uid: string;
+  uid: string
   /** Title of the banner */
-  title: string;
+  title: string
   /** Link of the banner */
-  url: string;
+  url: string
   /** URL of the banner image */
-  imageUrl: string;
+  imageUrl: string
 }

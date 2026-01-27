@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { getListCountry } from './composables/country/list'
-
 const colorMode = useColorMode()
 
 onMounted(() => {
-colorMode.preference = 'light'
+  colorMode.preference = 'light'
 })
 
 useHead({
@@ -35,7 +33,10 @@ useSeoMeta({
 
 <template>
   <UApp :toaster="{ position: 'top-right' }">
-    <div class="bg-default" data-vaul-drawer-wrapper>
+    <div
+      class="bg-default"
+      data-vaul-drawer-wrapper
+    >
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

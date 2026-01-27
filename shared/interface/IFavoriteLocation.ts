@@ -1,26 +1,26 @@
 export interface IFavoriteLocation {
-  uid: string;
-  name: string;
-  summary: string;
-  banner: string;
+  uid: string
+  name: string
+  summary: string
+  banner: string
 }
 
 export interface IFavoriteLocationDetail {
   /** Unique identifier of the favorite location detail */
-  uid: string;
+  uid: string
   /** Name of the favorite location detail */
-  name: string;
+  name: string
   /** Summary of the favorite location detail */
-  summary: string;
+  summary: string
   /** Array of banner image file names */
-  banner: string[];
+  banner: string[]
   /** Country associated with this favorite location detail */
   country: {
     /** Banner image file name for the country */
-    bannerName: string;
+    bannerName: string
     /** Name of the country */
-    name: string;
+    name: string
     /** Unique identifier of the country */
-    uid: string;
-  };
+    uid: string
+  }
 }

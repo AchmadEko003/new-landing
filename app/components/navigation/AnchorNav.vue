@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-interface SectionDef { id: string; title: string }
+interface SectionDef { id: string, title: string }
 const props = defineProps<{ sections: SectionDef[] }>()
 
 const activeId = ref<string>('')
@@ -102,7 +102,7 @@ onMounted(() => {
     let maxRatio = 0
     let mostVisibleSection = ''
 
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
         maxRatio = entry.intersectionRatio
         mostVisibleSection = entry.target.id
@@ -117,7 +117,7 @@ onMounted(() => {
     threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
   })
 
-  props.sections.forEach(s => {
+  props.sections.forEach((s) => {
     const el = document.getElementById(s.id)
     if (el) observer?.observe(el)
   })
@@ -161,8 +161,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <nav ref="navRef" class="w-full overflow-x-auto no-scrollbar py-2 px-4 md:px-24 sticky top-[62px] bg-white z-50">
-    <ul ref="ulRef" class="flex gap-6 md:gap-8 px-2 pr-8 md:pr-16 relative">
+  <nav
+    ref="navRef"
+    class="w-full overflow-x-auto no-scrollbar py-2 px-4 md:px-24 sticky top-[62px] bg-white z-50"
+  >
+    <ul
+      ref="ulRef"
+      class="flex gap-6 md:gap-8 px-2 pr-8 md:pr-16 relative"
+    >
       <!-- Animated border -->
       <div
         ref="borderRef"
@@ -170,15 +176,18 @@ onBeforeUnmount(() => {
         :style="borderStyle"
       />
 
-      <li v-for="(section, index) in sections" :key="section.id">
+      <li
+        v-for="(section, index) in sections"
+        :key="section.id"
+      >
         <button
           ref="buttonRefs"
           type="button"
           :class="['whitespace-nowrap pb-1 transition-colors text-sm md:text-lg font-bold cursor-pointer relative',
-          activeId === section.id ? 'text-primary font-semibold' : 'text-gray-600 hover:text-primary',
-          sections.length - 1 === index ? 'mr-8' : '']"
-          @click="scrollTo(section.id)"
+                   activeId === section.id ? 'text-primary font-semibold' : 'text-gray-600 hover:text-primary',
+                   sections.length - 1 === index ? 'mr-8' : '']"
           :data-section-id="section.id"
+          @click="scrollTo(section.id)"
         >
           {{ section.title }}
         </button>

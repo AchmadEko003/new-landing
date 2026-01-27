@@ -4,13 +4,17 @@
       {{ props.title }}
     </h2>
 
-    <NuxtLink v-if="props.url" class="text-sm md:text-lg transition-all hover:underline hover:text-primary" :href="props.url">Lihat Semua</NuxtLink>
+    <NuxtLink
+      v-if="props.url"
+      class="text-sm md:text-lg transition-all hover:underline hover:text-primary"
+      :href="props.url"
+    >Lihat Semua</NuxtLink>
   </div>
 </template>
 
 <script lang="ts" setup>
 const props = defineProps<{
-  title: string;
-  url?: string;
-}>();
+  title: string
+  url?: string
+}>()
 </script>

@@ -2,25 +2,28 @@
 import DOMPurify from 'dompurify'
 
 const props = defineProps<{
-  content: string;
-}>();
+  content: string
+}>()
 
 const sanitizedContent = computed(() => {
-  if (!props.content) return '';
+  if (!props.content) return ''
 
-  return DOMPurify.sanitize(props.content);
-});
+  return DOMPurify.sanitize(props.content)
+})
 </script>
 
 <template>
   <ClientOnly>
     <template #fallback>
       <div class="ql-editor animate-pulse">
-        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+        <div class="h-4 bg-gray-200 rounded w-1/2" />
       </div>
     </template>
-    <div v-html="sanitizedContent" class="ql-editor"></div>
+    <div
+      class="ql-editor"
+      v-html="sanitizedContent"
+    />
   </ClientOnly>
 </template>
 

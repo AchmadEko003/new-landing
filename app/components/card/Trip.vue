@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type { ITripCard } from "~~/shared/interface/ITrip";
-import { formatCurrency } from "~~/shared/script/currency";
+import type { ITripCard } from '~~/shared/interface/ITrip'
+import { formatCurrency } from '~~/shared/script/currency'
 
-const props = defineProps<ITripCard>();
+const props = defineProps<ITripCard>()
 
-const imageSrc = computed(() => props.imageSrc);
-const title = computed(() => props.title || "");
-const days = computed(() => props.days || "0");
-const summary = computed(() => props.summary || "");
-const startPrice = computed(() => props.startPrice ?? 0);
-const url = computed(() => props.url || "#");
+const imageSrc = computed(() => props.imageSrc)
+const title = computed(() => props.title || '')
+const days = computed(() => props.days || '0')
+const summary = computed(() => props.summary || '')
+const startPrice = computed(() => props.startPrice ?? 0)
+const url = computed(() => props.url || '#')
 </script>
 
 <template>
@@ -18,12 +18,15 @@ const url = computed(() => props.url || "#");
       :class="[
         'w-full max-w-[15em] md:max-w-[20em] min-h-[400px] md:min-h-[608px] rounded-2xl overflow-hidden',
         'border-[1px] border-gray-200 hover:border-primary group cursor-pointer flex flex-col select-none',
-        'hover:-mt-2 transition-all duration-300 ease-in-out',
+        'hover:-mt-2 transition-all duration-300 ease-in-out'
       ]"
     >
       <!-- Image Section -->
       <div class="relative pointer-events-none flex-shrink-0">
-        <ImageResponsive :img-url="`/trip/${imageSrc}.jpeg`" size="medium" />
+        <ImageResponsive
+          :img-url="`/trip/${imageSrc}.jpeg`"
+          size="medium"
+        />
       </div>
 
       <!-- Content Section - Flexible height -->

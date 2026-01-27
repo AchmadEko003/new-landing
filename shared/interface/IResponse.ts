@@ -4,17 +4,17 @@ export interface IResponse<T> {
    */
   meta: {
     /** HTTP status code of the response. */
-    status: boolean;
+    status: boolean
     /** Message detailing the response status. */
-    message: string;
+    message: string
     /** Total number of items available (for paginated responses). */
-    totalItem: number;
-  };
+    totalItem: number
+  }
 
   /**
    * The response payload, which can be a single object or an array of objects.
    */
-  data: T | undefined;
+  data: T | undefined
 }
 
 export interface IResponseList<T> {
@@ -23,15 +23,15 @@ export interface IResponseList<T> {
    */
   meta: {
     /** HTTP status code of the response. */
-    status: boolean;
+    status: boolean
     /** Message detailing the response status. */
-    message: string;
+    message: string
     /** Total number of items available (for paginated responses). */
-    totalItem: number;
-  };
+    totalItem: number
+  }
 
   /**
    * The response payload, which can be a single object or an array of objects.
    */
-  data: T[] | undefined;
+  data: T[] | undefined
 }

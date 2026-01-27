@@ -1,48 +1,48 @@
 <script lang="ts" setup>
-import type { ITripCard } from "~~/shared/interface/ITrip";
+import type { ITripCard } from '~~/shared/interface/ITrip'
 
 const props = defineProps<{
-  items: ITripCard[];
-}>();
+  items: ITripCard[]
+}>()
 
 const listImages = computed(() => {
-  console.log("trip nih");
-  if (!props.items) return [];
+  console.log('trip nih')
+  if (!props.items) return []
 
   // Create a new array to avoid mutating props
   return [
     ...props.items,
     {
-      imageSrc: "",
-      title: "",
-      days: "0",
-      summary: "",
-      startPrice: 0,
+      imageSrc: '',
+      title: '',
+      days: '0',
+      summary: '',
+      startPrice: 0
     },
     {
-      imageSrc: "",
-      title: "",
-      days: "0",
-      summary: "",
-      startPrice: 0,
-    },
-  ];
-});
+      imageSrc: '',
+      title: '',
+      days: '0',
+      summary: '',
+      startPrice: 0
+    }
+  ]
+})
 
-const carouselSliderTrip = ref<any>(null);
-const emblaApi = computed(() => carouselSliderTrip.value?.emblaApi);
+const carouselSliderTrip = ref<any>(null)
+const emblaApi = computed(() => carouselSliderTrip.value?.emblaApi)
 
 const next = () => {
   if (emblaApi.value) {
-    emblaApi.value.scrollNext();
+    emblaApi.value.scrollNext()
   }
-};
+}
 
 const prev = () => {
   if (emblaApi.value) {
-    emblaApi.value.scrollPrev();
+    emblaApi.value.scrollPrev()
   }
-};
+}
 </script>
 
 <template>
@@ -62,7 +62,7 @@ const prev = () => {
         class="w-full h-full"
         :ui="{
           item: 'basis-1/2.5 xl:basis-1/3.5 pt-3',
-          container: 'px-2 md:px-25',
+          container: 'px-2 md:px-25'
         }"
       >
         <CardTrip
@@ -81,11 +81,16 @@ const prev = () => {
           "
           :class="[
             'border-[1px] border-gray-200 hover:border-primary transition-colors min-h-[488px] md:min-h-[608px]',
-            'w-[15em] md:w-[20em] p-3 flex justify-center items-center rounded-2xl font-bold',
+            'w-[15em] md:w-[20em] p-3 flex justify-center items-center rounded-2xl font-bold'
           ]"
         >
-          <p class="text-center items-center">Lihat semua Trip</p>
-          <Icon name="heroicons:chevron-right" class="font-bold ml-1" />
+          <p class="text-center items-center">
+            Lihat semua Trip
+          </p>
+          <Icon
+            name="heroicons:chevron-right"
+            class="font-bold ml-1"
+          />
         </div>
         <div v-else />
       </UCarousel>

@@ -1,28 +1,28 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  bannersData?: string[];
-}>();
+  bannersData?: string[]
+}>()
 
-const items = computed(() => props.bannersData || []);
+const items = computed(() => props.bannersData || [])
 
-const { width } = useWindowSize();
+const { width } = useWindowSize()
 
-const computedWidth = computed(() => width.value || 0);
+const computedWidth = computed(() => width.value || 0)
 
-const carousel = ref<any>(null);
-const emblaApi = computed(() => carousel.value?.emblaApi);
+const carousel = ref<any>(null)
+const emblaApi = computed(() => carousel.value?.emblaApi)
 
 const next = () => {
   if (emblaApi.value) {
-    emblaApi.value.scrollNext();
+    emblaApi.value.scrollNext()
   }
-};
+}
 
 const prev = () => {
   if (emblaApi.value) {
-    emblaApi.value.scrollPrev();
+    emblaApi.value.scrollPrev()
   }
-};
+}
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const prev = () => {
       :dots="false"
       :ui="{
         item: '!p-0',
-        container: 'h-[55dvh] md:h-[75dvh]',
+        container: 'h-[55dvh] md:h-[75dvh]'
       }"
     >
       <div class="relative">

@@ -1,45 +1,48 @@
 <script lang="ts" setup>
-import type { IResponse } from "~~/shared/interface/IResponse";
-import type { IFavoriteLocationDetail } from "~~/shared/interface/IFavoriteLocation";
+import type { IResponse } from '~~/shared/interface/IResponse'
+import type { IFavoriteLocationDetail } from '~~/shared/interface/IFavoriteLocation'
 
-const baseUrl = useRuntimeConfig().public.apiBase;
-const route = useRoute();
+const baseUrl = useRuntimeConfig().public.apiBase
+const route = useRoute()
 
-const uid = computed(() => (route.params.uid as string).split("_")[1] || "");
+const uid = computed(() => (route.params.uid as string).split('_')[1] || '')
 const title = computed(() => {
-  const param = (route.params.uid as string) || "";
-  const rawTitle = param.split("_")[0] || "";
+  const param = (route.params.uid as string) || ''
+  const rawTitle = param.split('_')[0] || ''
   return rawTitle
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-});
+    .split('-')
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+})
 
-const { data: favoriteData } = useNuxtData(`favorite-location-${uid.value}`);
+const { data: favoriteData } = useNuxtData(`favorite-location-${uid.value}`)
 const { data: detailData, pending } = useLazyFetch<
   IResponse<IFavoriteLocationDetail>
 >(() => `${baseUrl}/FavouriteLocation/${uid.value}`, {
-  method: "GET",
+  method: 'GET',
   key: `favorite-location-${uid.value}`,
   getCachedData() {
     if (favoriteData.value) {
-      return favoriteData.value as IResponse<IFavoriteLocationDetail>;
+      return favoriteData.value as IResponse<IFavoriteLocationDetail>
     }
-  },
-});
+  }
+})
 
 const bannerList = computed(() => {
   return (
     detailData?.value?.data?.banner?.map(
-      (item) => `/favorite-location/${item}.jpeg`,
+      item => `/favorite-location/${item}.jpeg`
     ) || []
-  );
-});
+  )
+})
 </script>
 
 <template>
   <image-loading v-if="pending" />
-  <div v-else class="flex flex-col gap-7">
+  <div
+    v-else
+    class="flex flex-col gap-7"
+  >
     <ClientOnly>
       <CarouselBannerPage
         v-if="bannerList && bannerList.length > 0"

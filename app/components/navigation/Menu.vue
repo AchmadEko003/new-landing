@@ -10,16 +10,16 @@ const itemsMobile = computed(() => {
   return [
     {
       label: 'Home',
-      to: '/',
+      to: '/'
     },
     {
       label: 'Destinasi',
-      to: '/destinasi-populer',
+      to: '/destinasi-populer'
     },
     ...items.value,
     {
       label: 'Terms & Conditions',
-      to: '/terms-and-conditions',
+      to: '/terms-and-conditions'
     }
   ]
 })
@@ -60,22 +60,29 @@ const items = ref<NavigationMenuItem[]>([
     label: 'Bantuan',
     to: '/contact-us',
     class: 'hover:text-primary'
-  },
+  }
 ])
-
 </script>
 
 <template>
   <header class="flex items-center justify-between px-3 md:px-10 h-[62px] shadow-lg sticky top-0 bg-white z-50">
     <div>
       <NuxtLink href="/">
-        <img src="/assets/logo-with-title.png" alt="Peponi Logo" class="h-12 w-auto" />
+        <img
+          src="/assets/logo-with-title.png"
+          alt="Peponi Logo"
+          class="h-12 w-auto"
+        >
       </NuxtLink>
     </div>
 
     <!-- Desktop Menu -->
     <div class="hidden md:block">
-      <UNavigationMenu :items="itemsDesktop" arrow class="item-center justify-end" />
+      <UNavigationMenu
+        :items="itemsDesktop"
+        arrow
+        class="item-center justify-end"
+      />
     </div>
 
     <!-- Mobile Menu -->
@@ -83,26 +90,48 @@ const items = ref<NavigationMenuItem[]>([
       <ClientOnly>
         <template #fallback>
           <button class="bg-white text-black flex items-center active:scale-95 transition-transform">
-            <Icon name="heroicons:list-bullet" size="30" />
+            <Icon
+              name="heroicons:list-bullet"
+              size="30"
+            />
           </button>
         </template>
 
-        <UDrawer v-model:open="dialogState" should-scale-background set-background-color-on-scale direction="right" :ui="{
-          overlay: 'bg-black/30',
-          content: 'bg-primary/95 ring-0 w-screen max-w-none',
-        }">
-          <button label="Open" class="bg-white text-black flex items-center active:scale-95 transition-transform">
-            <Icon name="heroicons:list-bullet" size="30" />
+        <UDrawer
+          v-model:open="dialogState"
+          should-scale-background
+          set-background-color-on-scale
+          direction="right"
+          :ui="{
+            overlay: 'bg-black/30',
+            content: 'bg-primary/95 ring-0 w-screen max-w-none'
+          }"
+        >
+          <button
+            label="Open"
+            class="bg-white text-black flex items-center active:scale-95 transition-transform"
+          >
+            <Icon
+              name="heroicons:list-bullet"
+              size="30"
+            />
           </button>
 
           <template #header>
             <div class="flex justify-between">
               <NuxtLink href="/">
-                <img src="/assets/logo-with-title-white.png" alt="Peponi Logo" class="h-12 w-auto" />
+                <img
+                  src="/assets/logo-with-title-white.png"
+                  alt="Peponi Logo"
+                  class="h-12 w-auto"
+                >
               </NuxtLink>
 
               <button @click="dialogState = false">
-                <UIcon name="i-heroicons-x-mark" class="w-8 h-8 text-white" />
+                <UIcon
+                  name="i-heroicons-x-mark"
+                  class="w-8 h-8 text-white"
+                />
               </button>
             </div>
           </template>
@@ -115,11 +144,22 @@ const items = ref<NavigationMenuItem[]>([
                 label: '!bg-black'
               }" /> -->
             <div class="flex flex-col gap-5">
-              <div v-for="value in itemsMobile" :key="value.label">
-                <NuxtLink :to="value.to" @click="dialogState = false">
+              <div
+                v-for="value in itemsMobile"
+                :key="value.label"
+              >
+                <NuxtLink
+                  :to="value.to"
+                  @click="dialogState = false"
+                >
                   <div class="flex items-center justify-between">
                     <h4 class="text-2xl font-bold text-white">{{ value.label }}</h4>
-                    <Icon name="heroicons:chevron-right" color="white" class="text-white" size="24" />
+                    <Icon
+                      name="heroicons:chevron-right"
+                      color="white"
+                      class="text-white"
+                      size="24"
+                    />
                   </div>
                 </NuxtLink>
               </div>

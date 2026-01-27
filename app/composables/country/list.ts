@@ -6,7 +6,7 @@ export const getListCountry = async () => {
 
   let loading = true
 
-  const res = await $fetch(`${runtime.public.apiBase}Country/country.list`, {
+  const res = await $fetch(`${runtime.public.apiBase}/Country/country.list`, {
     onResponse: ({ response }) => {
       if (response.ok) {
         const data: IResponseList<ICountry> = response._data
@@ -25,7 +25,6 @@ export const getListCountry = async () => {
   return { data: res as ICountryHeaderMenu, pending: loading }
 }
 
-
 const reformattedTodos = (payload: ICountry[] | undefined): ICountryHeaderMenu[] => {
   const tempValue = payload ?? []
 
@@ -43,5 +42,4 @@ const reformattedTodos = (payload: ICountry[] | undefined): ICountryHeaderMenu[]
   })
 
   return result
-};
-
+}

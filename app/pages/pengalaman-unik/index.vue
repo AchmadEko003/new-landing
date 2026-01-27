@@ -17,7 +17,7 @@ const { data: pengalamanUnikData, pending: pengalamanUnikPending } = await useFe
 >(() => `${baseUrl}UniqueExperience`, {
   key: `unique-experience${categoryUid.value ? '-' + categoryUid.value : ''}`,
   query: {
-  categoryUid
+    categoryUid
   }
 })
 
