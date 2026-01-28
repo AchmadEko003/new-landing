@@ -1,1 +1,0 @@
-function m(t,n="id-ID",i="IDR"){const r=typeof t=="string"?parseFloat(t):t;return isNaN(r)?"-":new Intl.NumberFormat(n,{style:"currency",currency:i,minimumFractionDigits:0,maximumFractionDigits:0}).format(r).replace(/\./g,",")}export{m as f};
