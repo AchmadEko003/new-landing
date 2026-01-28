@@ -1,155 +1,48 @@
 <script lang="ts" setup>
-import type { IResponse } from '~~/shared/interface/IResponse'
-import type { ITripAccomodation, ITripDetail, ITripRating } from '~~/shared/interface/ITrip'
-// import type { IAdditionalInfo } from '~~/shared/interface/IAdditionalInfo'
-
-const route = useRoute()
-const router = useRouter()
-const tripId = computed(() => route.params.tripId as string)
-const { width } = useWindowSize()
-
-const { sanitizeHtml } = useSanitize()
-
-const sections = [
-  { id: 'summary-trip-section', title: 'Ringkasan' },
-  { id: 'suitability-section', title: 'Apakah sesuai untukmu?' },
-  { id: 'itinerary-section', title: 'Itinerary' },
-  { id: 'included-section', title: 'Termasuk & Tidak Termasuk' },
-  { id: 'accommodation-section', title: 'Akomodasi' },
-  { id: 'reviews-section', title: 'Ulasan' },
-  { id: 'faqs-section', title: 'FAQs' },
-  { id: 'schedule-section', title: 'Jadwal Trip' }
-]
-
-// Detail trip
-const {
-  data: tripDetailData,
-  pending: tripPending,
-  error: tripError
-} = useFetch<IResponse<ITripDetail>>(`/api/trips/${tripId.value}`)
+import { setImageBaseUrlForSeo } from '~~/shared/script/set-baseUrl-image-seo'
 
 const {
-  data: tripRatingData,
-  pending: ratingPending,
-  error: ratingError
-} = useLazyFetch<IResponse<ITripRating[]>>(`/api/trips/review/${tripId.value}`)
+  // Data
+  trip,
+  tripPending,
+  tripError,
+  ratings,
+  ratingPending,
+  ratingError,
+  // Computed
+  sections,
+  bentoSize,
+  width,
+  reformattedUniqueExperiences,
+  accommodationList,
+  suitAbility,
+  // Actions/State
+  firstAvailablePrice,
+  showStickyMobileInfo,
+  scrollToSchedule,
+  sanitizeHtml
+} = useTripDetail()
 
-// const {
-//   data: additionalInfoData,
-//   pending: additionalInfoPending,
-//   error: additionalInfoError
-// } = useLazyFetch<IResponse<IAdditionalInfo[]>>(
-//   `/api/additional-info/${tripId.value}`
-// )
-
-const trip = computed(() => tripDetailData.value?.data)
-const ratings = computed(() =>
-  Array.isArray(tripRatingData.value?.data) ? tripRatingData.value?.data : []
-)
-// const additionalInfoList = computed(() =>
-//   Array.isArray(additionalInfoData.value?.data)
-//     ? additionalInfoData.value?.data
-//     : []
-// )
-
-const accommodationList = computed(() => {
-  if (!trip.value?.accomodation) return []
-
-  // Handle case where accomodation is an array
-  console.log('asd', trip.value.accomodation)
-  if (Array.isArray(trip.value.accomodation)) {
-    return trip.value.accomodation.map((item: any) => {
-      // Get first thumbnail if available, fallback to image, then placeholder
-      const image = item.thumbnail?.[0]
-        ? `/accommodation/${item.thumbnail[0]}.jpeg`
-        : item.image || '/placeholder-accommodation.jpg'
-
-      return {
-        image,
-        name: item.name || 'Unnamed Accommodation',
-        location: item.location || '',
-        rating: item.rating || 0,
-        reviewCount: item.reviewCount || 0,
-        description: item.content || '',
-        images: Array.isArray(item.thumbnail) ? item.thumbnail : [],
-        basic: item.basic
-      }
-    })
-  }
-
-  // Handle case where accomodation is a single object
-  if (typeof trip.value.accomodation === 'object') {
-    const accommodation = trip.value.accomodation as ITripAccomodation
-
-    // Get first thumbnail if available, fallback to image, then placeholder
-    const image = accommodation.thumbnail?.[0]
-      ? `/accommodation/${accommodation.thumbnail[0]}.jpeg`
-      : accommodation.image || '/placeholder-accommodation.jpg'
-
-    return [
-      {
-        image,
-        name: accommodation.name || 'Unnamed Accommodation',
-        location: accommodation.location || '',
-        rating: accommodation.rating || 0,
-        reviewCount: accommodation.reviewCount || 0,
-        description: accommodation.content || '',
-        facilities: Array.isArray(accommodation.facilities)
-          ? accommodation.facilities
-          : [],
-        images: Array.isArray(accommodation.thumbnail)
-          ? accommodation.thumbnail
-          : [],
-        basic: accommodation.basic
-      }
-    ]
-  }
-
-  return []
-})
-
-const suitAbility = computed(() => sanitizeHtml(trip.value?.suitability || ''))
-
-// For sticky mobile info
+// Refs for template usage
 const tripScheduleRef = ref()
-const firstAvailablePrice = ref(0)
-const showStickyMobileInfo = ref(true)
 
-// Fetch the minimum price from trip data
-watchEffect(() => {
-  if (trip.value?.price) {
-    firstAvailablePrice.value = trip.value.price
-  }
+useSeoMeta({
+  title: () => trip.value ? `${trip.value.name} - Peponi` : 'Trip Detail - Peponi',
+  description: () => trip.value ? trip.value.headline : 'Detail trip di Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  ogTitle: () => trip.value ? `${trip.value.name} - Peponi` : 'Trip Detail - Peponi',
+  ogDescription: () => trip.value ? trip.value.headline : 'Detail trip di Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  ogImage: () => trip.value && trip.value.bannerImages && trip.value.bannerImages.length > 0
+    ? setImageBaseUrlForSeo(`/trip/${trip.value.bannerImages[0]}.jpeg`)
+    : undefined,
+  ogType: () => 'website',
+  ogUrl: () => trip.value ? `http://localhost:3000/trip/${trip.value.uid}` : undefined,
+  twitterCard: () => 'summary_large_image',
+  twitterTitle: () => trip.value ? `${trip.value.name} - Peponi` : 'Trip Detail - Peponi',
+  twitterDescription: () => trip.value ? trip.value.headline : 'Detail trip di Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  twitterImage: () => trip.value && trip.value.bannerImages && trip.value.bannerImages.length > 0
+    ? setImageBaseUrlForSeo(`/trip/${trip.value.bannerImages[0]}.jpeg`)
+    : undefined
 })
-
-// Hide sticky mobile info when user is in schedule section
-onMounted(() => {
-  const scheduleSection = document.getElementById('schedule-section')
-  if (scheduleSection) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          showStickyMobileInfo.value = !entry.isIntersecting
-        })
-      },
-      { threshold: 0.1 }
-    )
-    observer.observe(scheduleSection)
-  }
-})
-
-const scrollToSchedule = () => {
-  const scheduleSection = document.getElementById('schedule-section')
-  if (scheduleSection) {
-    scheduleSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-}
-
-// Navigate to experience detail page
-const navigateToExperience = async (experience: any) => {
-  const slug = experience.name.toLowerCase().replace(/\s+/g, '-')
-  await router.push(`/pengalaman-unik/${slug}_${experience.uid}`)
-}
 </script>
 
 <template>
@@ -165,13 +58,7 @@ const navigateToExperience = async (experience: any) => {
   >
     <span class="text-red-500">{{ tripError.message || tripError }}</span>
   </div>
-  <div
-    v-else-if="!trip"
-    class="flex items-center justify-center h-[50dvh] md:h-[75dvh]"
-  >
-    <span class="text-gray-500">Trip not found.</span>
-  </div>
-  <div v-else>
+  <div v-else-if="trip">
     <CarouselTripBanner
       :images="trip.bannerImages"
       :trip-name="trip.name"
@@ -320,21 +207,11 @@ const navigateToExperience = async (experience: any) => {
           <h2 class="text-2xl font-semibold mb-2">
             Pengalaman utama
           </h2>
-          <div class="grid grid-cols-3 gap-5">
-            <div
-              v-for="(item, i) in trip.uniqueExperience.slice(0, 9)"
-              :key="i"
-              class="cursor-pointer"
-              @click="navigateToExperience(item)"
-            >
-              <ImageThumbnail
-                v-bind="item"
-                :title="item.name"
-                aspect-auto
-                :img-url="`/unique-experience/512_${item.uid}.webp`"
-              />
-            </div>
-          </div>
+          <GridBento
+            class=""
+            :items="reformattedUniqueExperiences"
+            :size="bentoSize"
+          />
         </div>
       </section>
 
@@ -343,7 +220,6 @@ const navigateToExperience = async (experience: any) => {
           <h2 class="text-2xl font-semibold mb-2">
             Apakah trip ini sesuai untukmu?
           </h2>
-          <!-- <div class="prose" v-html="suitAbility" /> -->
           <UtilHtmlRender :content="suitAbility" />
         </div>
       </section>
@@ -355,11 +231,12 @@ const navigateToExperience = async (experience: any) => {
           </h2>
           <UAccordion
             v-if="trip.itineraries && trip.itineraries.length"
-            :items="trip.itineraries.map((item: any, i: number) => ({
-              label: `Day ${i + 1} ${item.title}`,
-              content: sanitizeHtml(item.content || ''),
-              banners: item.banners || []
-            }))
+            :items="
+              trip.itineraries.map((item: any, i: number) => ({
+                label: `Day ${i + 1} ${item.title}`,
+                content: sanitizeHtml(item.content || ''),
+                banners: item.banners || []
+              }))
             "
             :ui="{
               trigger: 'cursor-pointer',
@@ -367,7 +244,6 @@ const navigateToExperience = async (experience: any) => {
               trailingIcon: 'text-primary h-8 w-8'
             }"
           >
-            <!-- content: sanitizeHtml(item.content || '')  -->
             <template #content="{ item }">
               <div
                 v-if="item.banners && item.banners.length > 0"
@@ -387,12 +263,12 @@ const navigateToExperience = async (experience: any) => {
                   class="rounded-lg overflow-hidden"
                 >
                   <template #default="{ item: banner }">
-                    <img
-                      :src="`http://103.189.234.243/img-asset/trip/${banner}.jpeg`"
+                    <ImageResponsive
+                      :img-url="`/trip/${banner}.jpeg`"
                       :alt="`Banner for Day ${item.label}`"
+                      size="large"
                       class="w-full h-96 object-cover"
-                      draggable="false"
-                    >
+                    />
                   </template>
                 </UCarousel>
               </div>
@@ -422,24 +298,11 @@ const navigateToExperience = async (experience: any) => {
               :key="item.order"
               class="flex items-start gap-3"
             >
-              <UIcon
-                :name="item.isIncluded
-                  ? 'i-heroicons-check-circle'
-                  : 'i-heroicons-x-circle'
-                "
-                :class="item.isIncluded
-                  ? 'text-green-500'
-                  : 'text-red-500'
-                "
-                class="text-lg mt-0.5"
-              />
-              <div>
+              <div class="border border-gray-300 hover:border-primary hover:transition-all hover:duration-300 p-4 rounded-lg w-full">
                 <h4 class="font-semibold text-gray-900">
                   {{ item.title }}
                 </h4>
-                <p class="text-gray-600 text-sm">
-                  {{ item.content }}
-                </p>
+                <UtilHtmlRender :content="item.content" />
               </div>
             </div>
           </div>
@@ -460,7 +323,9 @@ const navigateToExperience = async (experience: any) => {
           Akomodasi
         </h2>
         <div v-if="accommodationList.length">
-          <CarouselAccommodation :accommodation-list="accommodationList" />
+          <CarouselAccommodation
+            :accommodation-list="accommodationList"
+          />
         </div>
         <div
           v-else
@@ -469,28 +334,6 @@ const navigateToExperience = async (experience: any) => {
           Tidak ada informasi akomodasi.
         </div>
       </section>
-
-      <!-- <section id="additional-info-section" class="mb-6">
-                <h2 class="text-2xl font-semibold mb-6">Informasi Tambahan</h2>
-                <div v-if="additionalInfoPending" class="text-gray-500">
-                    Memuat informasi tambahan...
-                </div>
-                <div v-else-if="additionalInfoError" class="text-red-500">
-                    {{ additionalInfoError.message || additionalInfoError }}
-                </div>
-                <div
-                    v-else-if="!additionalInfoList.length"
-                    class="text-gray-500"
-                >
-                    Tidak ada informasi tambahan.
-                </div>
-                <CarouselAdditionalInfo
-                    v-else
-                    :additional-info-list="additionalInfoList"
-                    :loading="additionalInfoPending"
-                    :error="additionalInfoError"
-                />
-            </section> -->
 
       <section
         id="reviews-section"
@@ -515,10 +358,11 @@ const navigateToExperience = async (experience: any) => {
         </h2>
         <UAccordion
           v-if="trip.faq && trip.faq.length"
-          :items="trip.faq.map((faq: any, i: number) => ({
-            label: faq.title || `FAQ ${i + 1}`,
-            content: sanitizeHtml(faq.content || '')
-          }))
+          :items="
+            trip.faq.map((faq: any, i: number) => ({
+              label: faq.title || `FAQ ${i + 1}`,
+              content: sanitizeHtml(faq.content || '')
+            }))
           "
           :ui="{
             trigger: 'cursor-pointer',
@@ -526,7 +370,6 @@ const navigateToExperience = async (experience: any) => {
             trailingIcon: 'text-primary h-8 w-8'
           }"
         >
-          <!-- content: sanitizeHtml(faq.content || '')  -->
           <template #content="{ item }">
             <div
               class="prose prose-sm max-w-none text-gray-700"
@@ -546,7 +389,7 @@ const navigateToExperience = async (experience: any) => {
           </h2>
           <TripSchedule
             ref="tripScheduleRef"
-            :trip-uid="tripId"
+            :trip-uid="trip?.uid || ''"
           />
         </div>
       </section>
@@ -556,7 +399,9 @@ const navigateToExperience = async (experience: any) => {
           <h2 class="text-2xl font-semibold mb-2">
             Informasi Tambahan
           </h2>
-          <UtilHtmlRender :content="trip.moreInformation || ''" />
+          <UtilHtmlRender
+            :content="trip.moreInformation || ''"
+          />
         </div>
       </section>
     </div>
@@ -576,6 +421,12 @@ const navigateToExperience = async (experience: any) => {
         @button-click="scrollToSchedule"
       />
     </Transition>
+  </div>
+  <div
+    v-else
+    class="flex items-center justify-center h-[50dvh] md:h-[75dvh]"
+  >
+    <span class="text-gray-500">Trip not found.</span>
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { IResponse } from '~~/shared/interface/IResponse'
 import type { IUniqueExperienceDetail } from '~~/shared/interface/IUniqueExperience'
+import { setImageBaseUrlForSeo } from '~~/shared/script/set-baseUrl-image-seo'
 
 const baseUrl = useRuntimeConfig().public.apiBase
 const route = useRoute()
@@ -19,6 +20,22 @@ const { data: detailData, pending } = useFetch<IResponse<IUniqueExperienceDetail
 
 const bannerList = computed(() => {
   return detailData?.value?.data?.bannerList?.map(item => `/unique-experience/${item}.jpeg`) || []
+})
+
+useSeoMeta({
+  title: title.value + ' - Peponi',
+  description: detailData?.value?.data?.summary || 'Jelajahi pengalaman unik bersama Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  ogTitle: title.value + ' - Peponi',
+  ogDescription: detailData?.value?.data?.summary || 'Jelajahi pengalaman unik bersama Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  ogUrl: () => `https://localhost:3000/pengalaman-unik/${route.params.uid}`,
+  ogImage: () => bannerList.value.length > 0 ? setImageBaseUrlForSeo(bannerList.value[0]) : undefined,
+  ogImageAlt: title.value,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: title.value + ' - Peponi',
+  twitterDescription: detailData?.value?.data?.summary || 'Jelajahi pengalaman unik bersama Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  twitterImage: () => bannerList.value.length > 0 ? setImageBaseUrlForSeo(bannerList.value[0]) : undefined,
+  twitterImageAlt: title.value
 })
 </script>
 

@@ -53,6 +53,17 @@ const doFilter = (event: string) => {
     query.value = event || undefined
   }
 }
+
+useSeoMeta({
+  title: 'Pengalaman Unik - Peponi',
+  description: 'Jelajahi berbagai pengalaman unik yang ditawarkan oleh Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  ogTitle: 'Pengalaman Unik - Peponi',
+  ogDescription: 'Jelajahi berbagai pengalaman unik yang ditawarkan oleh Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
+  ogUrl: () => 'https://localhost:3000/pengalaman-unik',
+  twitterCard: 'app',
+  twitterTitle: 'Pengalaman Unik - Peponi',
+  twitterDescription: 'Jelajahi berbagai pengalaman unik yang ditawarkan oleh Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.'
+})
 </script>
 
 <template>
