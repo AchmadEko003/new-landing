@@ -53,9 +53,9 @@ const openDetailModal = async (pkg: any) => {
     try {
       let endpoint = ''
       if (pkg.referenceType === 'visa') {
-        endpoint = `/api/visa/${pkg.referenceId}`
+        endpoint = `${baseUrl}/Visa/${pkg.referenceId}`
       } else if (pkg.referenceType === 'experience') {
-        endpoint = `/api/unique-experience/${pkg.referenceId}`
+        endpoint = `${baseUrl}/UniqueExperience/${pkg.referenceId}`
       }
 
       if (endpoint) {
