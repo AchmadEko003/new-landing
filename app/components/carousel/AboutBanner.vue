@@ -1,39 +1,39 @@
 <script lang="ts" setup>
-import type { IBanner } from "~~/shared/interface/IBanner";
-import type { IResponse } from "~~/shared/interface/IResponse";
+import type { IBanner } from '~~/shared/interface/IBanner'
+import type { IResponse } from '~~/shared/interface/IResponse'
 
-const baseUrl = useRuntimeConfig().public.apiBase;
-const { width } = useWindowSize();
-const computedWidth = computed(() => width.value || 0);
+const baseUrl = useRuntimeConfig().public.apiBase
+const { width } = useWindowSize()
+const computedWidth = computed(() => width.value || 0)
 
-const carousel = ref<any>(null);
-const emblaApi = computed(() => carousel.value?.emblaApi);
+const carousel = ref<any>(null)
+const emblaApi = computed(() => carousel.value?.emblaApi)
 
 const next = () => {
   if (emblaApi.value) {
-    emblaApi.value.scrollNext();
+    emblaApi.value.scrollNext()
   }
-};
+}
 
 const prev = () => {
   if (emblaApi.value) {
-    emblaApi.value.scrollPrev();
+    emblaApi.value.scrollPrev()
   }
-};
+}
 
 const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
   `${baseUrl}/Banner/sub`,
   {
-    key: "sub-banners",
-  },
-);
+    key: 'sub-banners'
+  }
+)
 </script>
 
 <template>
   <div class="relative">
     <UCarousel
-      ref="carousel"
       v-if="aboutBannersData?.meta.totalItem"
+      ref="carousel"
       v-slot="{ item }"
       :items="(aboutBannersData?.data as IBanner[]) || []"
       class="w-full p-0"
@@ -42,13 +42,14 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
       :dots="false"
       :ui="{
         item: '!p-0',
-        container: 'h-[55dvh]', // Shorter height than banner.vue
+        container: 'h-[55dvh]' // Shorter height than banner.vue
       }"
     >
-      <div
-        class="w-full h-full bg-black/10 absolute z-10 top-0 bottom-0 right-0 left-0"
-      />
       <div class="relative">
+        <!-- Shadow for opacity -->
+        <div
+          class="w-full h-full bg-black/10 absolute z-10 top-0 bottom-0 right-0 left-0"
+        />
         <NuxtImg
           provider="peponi"
           :src="`/banner/${item.imageUrl}.jpeg`"
@@ -90,7 +91,10 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
         </div>
       </div>
     </UCarousel>
-    <div v-else class="flex items-center justify-center w-full h-[32dvh]">
+    <div
+      v-else
+      class="flex items-center justify-center w-full h-[32dvh]"
+    >
       <span>Loading banners...</span>
     </div>
   </div>
