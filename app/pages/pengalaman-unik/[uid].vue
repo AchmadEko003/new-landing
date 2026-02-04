@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { IResponse } from '~~/shared/interface/IResponse'
-import type { IUniqueExperienceDetail } from '~~/shared/interface/IUniqueExperience'
+import type { ITripCard } from '~~/shared/interface/ITrip'
+import type { IUniqueExperienceDetail, IUniqueExperienceTrips } from '~~/shared/interface/IUniqueExperience'
 import { setImageBaseUrlForSeo } from '~~/shared/script/set-baseUrl-image-seo'
 
 const baseUrl = useRuntimeConfig().public.apiBase
@@ -22,6 +23,17 @@ const bannerList = computed(() => {
   return detailData?.value?.data?.bannerList?.map(item => `/unique-experience/${item}.jpeg`) || []
 })
 
+const reformatTrip = (payload: IUniqueExperienceTrips[]): ITripCard[] => {
+  return payload.map(item => ({
+    imageSrc: item.banner?.[0] || '',
+    url: `/trip/${item.uid}`,
+    title: item.name,
+    days: String(item.days),
+    startPrice: item.price || 0,
+    tripId: item.uid
+  })) as ITripCard[]
+}
+
 useSeoMeta({
   title: title.value + ' - Peponi',
   description: detailData?.value?.data?.summary || 'Jelajahi pengalaman unik bersama Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
@@ -41,25 +53,17 @@ useSeoMeta({
 
 <template>
   <image-loading v-if="pending" />
-  <div
-    v-else
-    class="flex flex-col gap-7"
-  >
+  <div v-else class="flex flex-col gap-7">
     <ClientOnly>
-      <CarouselBannerPage
-        v-if="bannerList && bannerList.length > 0"
-        :banners-data="bannerList"
-      />
+      <CarouselBannerPage v-if="bannerList && bannerList.length > 0" :banners-data="bannerList" />
     </ClientOnly>
     <div class="mt-3">
-      <navigation-section-header
-        :title="title"
-        class="md:mx-20 px-6 md:px-24"
-      />
-      <util-html-render
-        :content="detailData?.data?.summary || ''"
-        class="md:mx-20 px-6 md:px-24"
-      />
+      <navigation-section-header :title="title" class="md:mx-20 px-6 md:px-24" />
+      <util-html-render :content="detailData?.data?.summary || ''" class="md:mx-20 px-6 md:px-24" />
+    </div>
+    <div v-if="detailData?.data">
+      <NavigationSectionHeader title="Trip Tersedia" url="/trip" />
+      <CarouselTrip :items="reformatTrip(detailData.data.trips)" />
     </div>
   </div>
 </template>

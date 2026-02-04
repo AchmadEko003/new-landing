@@ -15,7 +15,7 @@
       <UButton
         color="primary"
         size="lg"
-        class="px-6 font-semibold rounded-xl"
+        class="px-6 font-semibold rounded-xl cursor-pointer"
         @click="$emit('buttonClick')"
       >
         {{ buttonText }}

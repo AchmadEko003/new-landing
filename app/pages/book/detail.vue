@@ -490,8 +490,8 @@ const handlePaymentError = (error: string) => {
   <div>
     <div class="min-h-screen bg-gray-50 py-8">
       <!-- Desktop View -->
+      <!-- v-if="computedWidth > 720" -->
       <div
-        v-if="computedWidth > 720"
         class="container mx-auto px-4 max-w-4xl"
       >
         <!-- Header -->
@@ -739,11 +739,11 @@ const handlePaymentError = (error: string) => {
       </div>
 
       <!-- Mobile View -->
-      <div
-        v-else
+      <!-- v-else -->
+      <!-- <div
         class="px-4"
       >
-        <!-- Mobile Header -->
+
         <div class="text-center mb-6">
           <h1 class="text-2xl font-bold text-gray-900 mb-1">
             Cek Trip Saya
@@ -753,7 +753,6 @@ const handlePaymentError = (error: string) => {
           </p>
         </div>
 
-        <!-- Mobile Search -->
         <UCard class="mb-6">
           <UFormGroup
             label="Kode Booking"
@@ -779,12 +778,10 @@ const handlePaymentError = (error: string) => {
           </UFormGroup>
         </UCard>
 
-        <!-- Mobile Booking Details -->
         <div
           v-if="bookingData"
           class="space-y-4"
         >
-          <!-- Mobile Detail Card -->
           <UCard>
             <template #header>
               <h3 class="font-semibold">
@@ -793,7 +790,6 @@ const handlePaymentError = (error: string) => {
             </template>
 
             <div class="space-y-4">
-              <!-- Booking Info -->
               <div>
                 <h4 class="text-sm font-semibold text-gray-700 mb-2">
                   Info Booking
@@ -828,7 +824,6 @@ const handlePaymentError = (error: string) => {
 
               <UDivider />
 
-              <!-- Customer Info -->
               <div>
                 <h4 class="text-sm font-semibold text-gray-700 mb-2">
                   Info Pelanggan
@@ -859,7 +854,6 @@ const handlePaymentError = (error: string) => {
 
               <UDivider />
 
-              <!-- Payment Info -->
               <div>
                 <h4 class="text-sm font-semibold text-gray-700 mb-2">
                   Pembayaran
@@ -897,6 +891,7 @@ const handlePaymentError = (error: string) => {
           </UCard>
         </div>
       </div>
+    </div> -->
     </div>
 
     <UtilDialog

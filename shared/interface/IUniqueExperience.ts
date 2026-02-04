@@ -18,6 +18,14 @@ export interface IUniqueExperienceCategory {
   name: string
 }
 
+export interface IUniqueExperienceTrips {
+  uid: string
+  name: string
+  days: number
+  price: number
+  banner: string
+}
+
 export interface IUniqueExperienceDetail {
   /** Unique identifier of the experience detail */
   uid: string
@@ -28,14 +36,7 @@ export interface IUniqueExperienceDetail {
   /** List of banner image file names */
   bannerList: string[]
   /** Countries associated with this unique experience detail */
-  countries: {
-    /** Banner image file name for the country */
-    bannerName: string
-    /** Name of the country */
-    name: string
-    /** Unique identifier of the country */
-    uid: string
-  }
   /** Category of the experience detail */
   category: string
+  trips: IUniqueExperienceTrips[]
 }

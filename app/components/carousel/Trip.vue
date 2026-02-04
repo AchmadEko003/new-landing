@@ -2,7 +2,7 @@
 import type { ITripCard } from '~~/shared/interface/ITrip'
 
 const props = defineProps<{
-  items: ITripCard[]
+  items: ITripCard[] | undefined
 }>()
 
 const listImages = computed(() => {

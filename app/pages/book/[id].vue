@@ -1205,7 +1205,7 @@ useHead({
                 class="border-t pt-4"
               >
                 <button
-                  class="w-full flex items-center justify-between text-left hover:text-primary transition-colors"
+                  class="w-full flex items-center justify-between text-left hover:text-primary transition-colors cursor-pointer"
                   @click="toggleGuestDetails"
                 >
                   <h4 class="font-semibold">
@@ -1315,6 +1315,7 @@ useHead({
                   variant="outline"
                   size="lg"
                   block
+                  class="cursor-pointer"
                   @click="prevStep"
                 >
                   Sebelumnya

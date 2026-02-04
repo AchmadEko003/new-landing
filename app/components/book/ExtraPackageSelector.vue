@@ -144,7 +144,7 @@ const toggleAllGuests = (packageUid: string) => {
               :variant="areAllGuestsSelected(pkg.uid) ? 'solid' : 'outline'"
               :color="areAllGuestsSelected(pkg.uid) ? 'primary' : 'neutral'"
               size="sm"
-              :class="!areAllGuestsSelected(pkg.uid) ? 'border-gray-300' : ''"
+              :class="[!areAllGuestsSelected(pkg.uid) ? 'border-gray-300' : '', 'cursor-pointer']"
               @click="toggleAllGuests(pkg.uid)"
             >
               <UIcon
@@ -160,7 +160,7 @@ const toggleAllGuests = (packageUid: string) => {
                 :variant="props.isGuestSelectedForPackage(pkg.uid, guestIndex) ? 'solid' : 'outline'"
                 :color="props.isGuestSelectedForPackage(pkg.uid, guestIndex) ? 'primary' : 'neutral'"
                 size="sm"
-                :class="!props.isGuestSelectedForPackage(pkg.uid, guestIndex) ? 'border-gray-300' : ''"
+                :class="[!props.isGuestSelectedForPackage(pkg.uid, guestIndex) ? 'border-gray-300' : '', 'cursor-pointer']"
                 @click="emit('toggle', pkg.uid, guestIndex)"
               >
                 {{ guest.fullNameAsPerPassport || guest.name }}

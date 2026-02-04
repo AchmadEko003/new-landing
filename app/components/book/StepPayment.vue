@@ -400,7 +400,7 @@ defineExpose({
           variant="ghost"
           size="sm"
           :icon="props.showGuestDetails ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
-          class="mt-2"
+          class="mt-2 cursor-pointer"
           @click="props.toggleGuestDetails()"
         >
           <span>{{ props.showGuestDetails ? 'Sembunyikan detail' : 'Detail peserta' }}</span>

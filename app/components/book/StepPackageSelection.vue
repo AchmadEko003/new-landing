@@ -147,6 +147,7 @@ const packages = computed(() => {
             size="lg"
             :disabled="!voucherCode || props.voucherLoading"
             :loading="props.voucherLoading"
+            class="cursor-pointer"
             @click="props.claimVoucher()"
           >
             Pakai

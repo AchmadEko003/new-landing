@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { IResponse } from '~~/shared/interface/IResponse'
-import type { IFavoriteLocationDetail } from '~~/shared/interface/IFavoriteLocation'
+import type { IFavoriteLocationDetail, IFavoriteLocationDetailCountry } from '~~/shared/interface/IFavoriteLocation'
 import { setImageBaseUrlForSeo } from '~~/shared/script/set-baseUrl-image-seo'
+import type { IImage } from '~~/shared/interface/IImage'
 
 const baseUrl = useRuntimeConfig().public.apiBase
 const route = useRoute()
@@ -37,6 +38,17 @@ const bannerList = computed(() => {
   )
 })
 
+const reformatCountry = (payload: IFavoriteLocationDetailCountry[]): IImage[] => {
+  return payload.map(item => ({
+    uid: item.uid || '',
+    src: `/country/512_${item.bannerName}.webp`,
+    alt: item.bannerName,
+    url: `/destinasi-populer/${encodeURIComponent(item.name.trim().replace(/\s+/g, '-').toLowerCase())}_${item.uid}`,
+    caption: item.name,
+    name: item.name
+  })) as IImage[]
+}
+
 useSeoMeta({
   title: title.value + ' - Peponi',
   description: detailData?.value?.data?.summary || 'Jelajahi destinasi favorit bersama Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
@@ -58,25 +70,20 @@ useSeoMeta({
 
 <template>
   <image-loading v-if="pending" />
-  <div
-    v-else
-    class="flex flex-col gap-7"
-  >
+  <div v-else class="flex flex-col gap-7">
     <ClientOnly>
-      <CarouselBannerPage
-        v-if="bannerList && bannerList.length > 0"
-        :banners-data="bannerList"
-      />
+      <CarouselBannerPage v-if="bannerList && bannerList.length > 0" :banners-data="bannerList" />
     </ClientOnly>
     <div class="mt-3">
-      <navigation-section-header
-        :title="title"
-        class="md:mx-20 px-6 md:px-24"
+      <navigation-section-header :title="title" class="md:mx-20 px-6 md:px-24" />
+      <util-html-render :content="detailData?.data?.summary || ''" class="md:mx-20 px-6 md:px-24" />
+    </div>
+    <div>
+      <NavigationSectionHeader
+        title="Destinasi Populer"
+        url="/destinasi-populer"
       />
-      <util-html-render
-        :content="detailData?.data?.summary || ''"
-        class="md:mx-20 px-6 md:px-24"
-      />
+      <CarouselSliderImage :images="reformatCountry(detailData?.data?.countries || [])" />
     </div>
   </div>
 </template>

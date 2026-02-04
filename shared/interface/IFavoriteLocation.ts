@@ -5,6 +5,15 @@ export interface IFavoriteLocation {
   banner: string
 }
 
+export interface IFavoriteLocationDetailCountry {
+  /** Banner image file name for the country */
+  bannerName: string
+  /** Name of the country */
+  name: string
+  /** Unique identifier of the country */
+  uid: string
+}
+
 export interface IFavoriteLocationDetail {
   /** Unique identifier of the favorite location detail */
   uid: string
@@ -15,12 +24,5 @@ export interface IFavoriteLocationDetail {
   /** Array of banner image file names */
   banner: string[]
   /** Country associated with this favorite location detail */
-  country: {
-    /** Banner image file name for the country */
-    bannerName: string
-    /** Name of the country */
-    name: string
-    /** Unique identifier of the country */
-    uid: string
-  }
+  countries: IFavoriteLocationDetailCountry[]
 }
