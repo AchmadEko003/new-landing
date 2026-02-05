@@ -44,7 +44,7 @@ const booking = computed(() => bookingData.value?.data)
 // Extended booking step to allow custom payment method type and multiple package selection
 interface ExtendedBookingStep extends Omit<
   IBookingStep,
-    'selectedPaymentMethod' | 'selectedPackage'
+  'selectedPaymentMethod' | 'selectedPackage'
 > {
   selectedPaymentMethod?: PaymentMethodWithCode
   selectedPackages: IPackageSelection[]
@@ -326,9 +326,7 @@ const goToStep = (step: number) => {
       nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
       })
-    }
-    // Can go to next step only if current step is valid
-    else if (
+    } else if (
       step === bookingStep.value.currentStep + 1
       && isStepValid(bookingStep.value.currentStep)
     ) {
@@ -625,7 +623,7 @@ const confirmBooking = async () => {
                 if (!guest) return ''
                 const summary: GuestSummary = {
                   fullNameAsPerPassport:
-                                        guest.fullNameAsPerPassport,
+                    guest.fullNameAsPerPassport,
                   whatsappNumber: guest.whatsappNumber
                 }
                 return generateGuestId(summary)
@@ -633,6 +631,7 @@ const confirmBooking = async () => {
             )
           })
         ),
+        voucherCode: appliedVoucher.value?.code,
         customers: guestForm.value.guests.map((guest, index) => ({
           gender: guest.gender || 'Mr',
           name: guest.fullNameAsPerPassport,
@@ -655,6 +654,8 @@ const confirmBooking = async () => {
         paymentModalRedirectUrl.value = response.data.redirect
         showPaymentLoadingModal.value = true
         paymentResponse.value = response
+
+        console.log('Response:', response.data.redirect)
       } else {
         console.error('CC Payment failed:', response?.meta.message)
         alert(
@@ -704,7 +705,7 @@ const confirmBooking = async () => {
 
               const summary: GuestSummary = {
                 fullNameAsPerPassport:
-                                    guest.fullNameAsPerPassport,
+                  guest.fullNameAsPerPassport,
                 whatsappNumber: guest.whatsappNumber
               }
 
@@ -898,8 +899,7 @@ useHead({
         <BookStepIndicator
           :current-step="bookingStep.currentStep"
           :step-titles="stepTitles"
-          :can-proceed-from-current="
-            isStepValid(bookingStep.currentStep)
+          :can-proceed-from-current="isStepValid(bookingStep.currentStep)
           "
           @step-click="goToStep"
         />
@@ -908,9 +908,7 @@ useHead({
       <div :class="isDesktop ? 'grid lg:grid-cols-3 gap-8' : 'block'">
         <!-- Main Content -->
         <div :class="isDesktop ? 'lg:col-span-2' : 'w-full'">
-          <div
-            class="bg-white rounded-2xl border border-gray-200 p-6"
-          >
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
             <h2 class="text-2xl font-bold mb-6">
               {{ stepTitles[bookingStep.currentStep - 1] }}
             </h2>
@@ -927,11 +925,9 @@ useHead({
               :voucher-error="voucherError"
               :can-remove-package="canRemovePackage"
               :get-package-quantity="getPackageQuantity"
-              :increment-package-quantity="
-                incrementPackageQuantity
+              :increment-package-quantity="incrementPackageQuantity
               "
-              :decrement-package-quantity="
-                decrementPackageQuantity
+              :decrement-package-quantity="decrementPackageQuantity
               "
               :claim-voucher="claimVoucher"
               :remove-voucher="removeVoucher"
@@ -966,11 +962,9 @@ useHead({
               <BookExtraPackageSelector
                 :extra-packages="booking.extraPackage"
                 :guests="guestForm.guests"
-                :is-guest-selected-for-package="
-                  isGuestSelectedForPackage
+                :is-guest-selected-for-package="isGuestSelectedForPackage
                 "
-                :get-selected-guest-count="
-                  getSelectedGuestCount
+                :get-selected-guest-count="getSelectedGuestCount
                 "
                 :format-currency="formatCurrency"
                 variant="default"
@@ -984,8 +978,7 @@ useHead({
               <BookStepPayment
                 ref="stepPaymentRef"
                 v-model:full-payment="fullPayment"
-                v-model:selected-payment-type="
-                  selectedPaymentType
+                v-model:selected-payment-type="selectedPaymentType
                 "
                 :booking="booking!"
                 :formatted-start-date="formattedStartDate"
@@ -997,8 +990,7 @@ useHead({
                 :applied-voucher="appliedVoucher"
                 :format-currency="formatCurrency"
                 :final-payment-amount="finalPaymentAmount"
-                :total-amount-after-discount="
-                  totalAmountAfterDiscount
+                :total-amount-after-discount="totalAmountAfterDiscount
                 "
                 :down-payment="booking.downPayment || 0"
                 :payment-methods="paymentMethods"
@@ -1006,8 +998,7 @@ useHead({
                 :select-payment-method="selectPaymentMethod"
                 :toggle-guest-details="toggleGuestDetails"
                 :guest-email="guestForm.guests[0]?.email || ''"
-                :guest-phone-number="
-                  guestForm.guests[0]?.whatsappNumber || ''
+                :guest-phone-number="guestForm.guests[0]?.whatsappNumber || ''
                 "
               />
             </template>
@@ -1019,9 +1010,7 @@ useHead({
           v-if="isDesktop"
           class="lg:col-span-1"
         >
-          <div
-            class="bg-white rounded-2xl border border-gray-200 p-6 sticky top-20"
-          >
+          <div class="bg-white rounded-2xl border border-gray-200 p-6 sticky top-20">
             <h3 class="text-xl font-bold mb-4">
               {{ booking.name }}
             </h3>
@@ -1051,9 +1040,7 @@ useHead({
                 >
                   <h5 class="text-lg font-bold">
                     Paket
-                    <span
-                      v-if="bookingStep.currentStep === 4"
-                    >({{
+                    <span v-if="bookingStep.currentStep === 4">({{
                       fullPayment
                         ? "Full Payment"
                         : "Down Payment"
@@ -1067,9 +1054,7 @@ useHead({
                     <div class="flex justify-between">
                       <span>{{ selection?.name }}</span>
                     </div>
-                    <div
-                      class="flex justify-between text-sm text-gray-600"
-                    >
+                    <div class="flex justify-between text-sm text-gray-600">
                       <span>{{ selection?.quantity }} x
                         Orang</span>
                       <span>{{
@@ -1138,9 +1123,7 @@ useHead({
                   <h5 class="text-lg font-bold">
                     Diskon
                   </h5>
-                  <div
-                    class="flex justify-between text-sm text-green-600"
-                  >
+                  <div class="flex justify-between text-sm text-green-600">
                     <span>Voucher ({{
                       appliedVoucher.code
                     }})</span>
@@ -1247,12 +1230,8 @@ useHead({
                   >
                     <div class="space-y-2">
                       <div class="flex justify-between">
-                        <span
-                          class="text-sm text-gray-600"
-                        >Nama & Gender</span>
-                        <span
-                          class="text-sm font-medium"
-                        >{{
+                        <span class="text-sm text-gray-600">Nama & Gender</span>
+                        <span class="text-sm font-medium">{{
                           guest.fullNameAsPerPassport
                         }}
                           ({{ guest.gender }})</span>
@@ -1261,12 +1240,8 @@ useHead({
                         v-if="guest.email"
                         class="flex justify-between"
                       >
-                        <span
-                          class="text-sm text-gray-600"
-                        >Email</span>
-                        <span
-                          class="text-sm font-medium"
-                        >{{ guest.email }}</span>
+                        <span class="text-sm text-gray-600">Email</span>
+                        <span class="text-sm font-medium">{{ guest.email }}</span>
                       </div>
                     </div>
                   </div>
@@ -1379,9 +1354,7 @@ useHead({
       >
         <!-- Success Icon and Message -->
         <div class="text-center">
-          <div
-            class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
-          >
+          <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
               class="w-10 h-10 text-green-600"
               fill="none"
@@ -1406,15 +1379,12 @@ useHead({
         <div
           v-if="showCopyFeedback"
           class="bg-green-100 border border-green-200 rounded-lg p-3 text-center transition-all duration-300"
-          :class="
-            showCopyFeedback
-              ? 'opacity-100 scale-100'
-              : 'opacity-0 scale-95'
+          :class="showCopyFeedback
+            ? 'opacity-100 scale-100'
+            : 'opacity-0 scale-95'
           "
         >
-          <div
-            class="flex items-center justify-center text-green-700"
-          >
+          <div class="flex items-center justify-center text-green-700">
             <svg
               class="w-4 h-4 mr-2"
               fill="none"
@@ -1437,9 +1407,7 @@ useHead({
         <!-- Invoice and Payment Details -->
         <div class="space-y-4">
           <!-- Invoice Number -->
-          <div
-            class="bg-green-50 rounded-xl p-4 border border-green-200"
-          >
+          <div class="bg-green-50 rounded-xl p-4 border border-green-200">
             <h4 class="text-sm font-semibold text-green-800 mb-2">
               Invoice Number
             </h4>

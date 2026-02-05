@@ -324,6 +324,8 @@ defineExpose({
         return null
       }
 
+      console.log('Processing payment with CC details...', paymentData)
+
       const cardYear = parseInt('20' + year, 10)
       const cardMonth = parseInt(month, 10)
 
@@ -334,6 +336,7 @@ defineExpose({
         extraPackage: paymentData?.extraPackage || [],
         customers: paymentData?.customers || [],
         paidOff: false,
+        voucherCode: paymentData?.voucherCode || '',
         cardHolderName: creditCardForm.value.cardName,
         cardNumber: creditCardForm.value.cardNumber.replace(/\s/g, ''),
         cardMonth: cardMonth,

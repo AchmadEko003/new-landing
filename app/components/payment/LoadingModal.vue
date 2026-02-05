@@ -1,26 +1,87 @@
 <script lang="ts" setup>
+import type { IResponse } from '~~/shared/interface/IResponse'
+
 interface Props {
   isOpen: boolean
   invoiceId?: string
   redirectUrl?: string
 }
 
+interface IPaymentStatus {
+  status: string
+}
+
+const baseUrl = useRuntimeConfig().public.apiBase
 const props = defineProps<Props>()
+const router = useRouter()
 
 const emit = defineEmits<{
   redirect: []
 }>()
 
 const redirecting = ref(false)
+const statusCheckInterval = ref<ReturnType<typeof setInterval> | null>(null)
+const showSuccessDialog = ref(false)
+
+const normalizedUrl = computed(() => {
+  if (!props.redirectUrl) return ''
+  let url = props.redirectUrl
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url
+  }
+  return url
+})
+
+const { data: statusPayment, execute: checkStatus } = await useLazyFetch<IResponse<IPaymentStatus>>(() => `${baseUrl}/payment/check-status/${props.invoiceId}`, {
+  method: 'GET',
+  immediate: false
+})
 
 const handleRedirect = () => {
-  if (props.redirectUrl) {
+  if (normalizedUrl.value) {
     redirecting.value = true
-    // Open redirect URL in new tab
-    window.open(props.redirectUrl, '_blank')
+    window.open(normalizedUrl.value, '_blank')
     emit('redirect')
+    setTimeout(() => {
+      redirecting.value = false
+    }, 2000)
   }
 }
+
+const startStatusCheck = () => {
+  if (statusCheckInterval.value) {
+    clearInterval(statusCheckInterval.value)
+  }
+
+  statusCheckInterval.value = setInterval(async () => {
+    await checkStatus()
+    if (statusPayment.value?.data?.status === 'PAID') {
+      if (statusCheckInterval.value) {
+        clearInterval(statusCheckInterval.value)
+      }
+      showSuccessDialog.value = true
+      setTimeout(() => {
+        router.push('/')
+      }, 3000)
+    }
+  }, 5000)
+}
+
+watch(() => props.isOpen, (isOpen) => {
+  if (isOpen && normalizedUrl.value) {
+    // Open redirect URL automatically when modal opens
+    window.open(normalizedUrl.value, '_blank')
+    // Start checking payment status
+    startStatusCheck()
+  }
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (statusCheckInterval.value) {
+    clearInterval(statusCheckInterval.value)
+  }
+})
 </script>
 
 <template>
@@ -52,7 +113,7 @@ const handleRedirect = () => {
 
       <!-- Title -->
       <h2 class="text-2xl font-bold text-center text-gray-900 mb-2">
-        Pembayaran Terdeteksi
+        Permintaan booking kami terima
       </h2>
 
       <!-- Message -->
@@ -76,7 +137,8 @@ const handleRedirect = () => {
       <!-- Info Box -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <p class="text-sm text-blue-800">
-          <strong>ℹ️ Penting:</strong> Jangan tutup halaman ini sampai Anda menyelesaikan verifikasi pembayaran di tab yang baru dibuka.
+          <strong>ℹ️ Penting:</strong> Anda akan dikenakan service fee kartu kredit sesuai ketentuan yang berlaku.
+          <!-- <strong>ℹ️ Penting:</strong> Jangan tutup halaman ini sampai Anda menyelesaikan verifikasi pembayaran di tab yang baru dibuka. -->
         </p>
       </div>
 
@@ -91,7 +153,7 @@ const handleRedirect = () => {
       <!-- Button -->
       <button
         :disabled="redirecting"
-        class="w-full bg-primary hover:bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full bg-primary cursor-pointer hover:bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         @click="handleRedirect"
       >
         <span v-if="!redirecting">Lanjutkan ke Pembayaran</span>
@@ -117,4 +179,33 @@ const handleRedirect = () => {
       </button>
     </div>
   </div>
+
+  <!-- Success Dialog -->
+  <UtilDialog
+    v-model="showSuccessDialog"
+    title="Pembayaran Berhasil!"
+    size="md"
+    :closable="true"
+    :overlay-close="false"
+  >
+    <div class="text-center space-y-4">
+      <!-- Success Icon -->
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+        <UIcon
+          name="i-heroicons-check-circle"
+          class="w-10 h-10 text-green-600"
+        />
+      </div>
+
+      <!-- Payment Success -->
+      <div class="space-y-3">
+        <p class="text-lg font-semibold text-green-600">
+          Pembayaran Anda telah berhasil!
+        </p>
+        <p class="text-gray-600">
+          Terima kasih telah melakukan pembayaran. Anda akan dialihkan ke halaman utama dalam beberapa detik.
+        </p>
+      </div>
+    </div>
+  </UtilDialog>
 </template>
