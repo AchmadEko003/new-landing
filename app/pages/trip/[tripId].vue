@@ -75,7 +75,7 @@ useSeoMeta({
           Destinasi
           <span class="text-gray-800">{{ trip.country }}</span>
         </div>
-        <p class="text-lg font-medium">
+        <p class="text-lg font-bold">
           {{ trip.headline }}
         </p>
         <p class="text-lg font-medium">

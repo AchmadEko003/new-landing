@@ -8,6 +8,7 @@ interface ICreditCardForm {
 
 }
 
+const baseUrl = useRuntimeConfig().public.apiBase
 const selectedPaymentType = ref<'virtual_account' | 'credit_card' | null>(null)
 const selectedBank = ref<{ code: string, name: string, icon: string } | null>(null)
 
@@ -224,7 +225,7 @@ const creditCardForm = ref<ICreditCardForm>({
           </div>
         </div>
 
-        <div
+        <!-- <div
           v-if="vaListPending"
           class="flex justify-center py-8"
         >
@@ -251,7 +252,6 @@ const creditCardForm = ref<ICreditCardForm>({
             ]"
             @click="selectBank(bank)"
           >
-            <!-- Selected Badge -->
             <div
               v-if="selectedBank?.code === bank.code"
               class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-lg"
@@ -277,7 +277,7 @@ const creditCardForm = ref<ICreditCardForm>({
               bank.name
             }}</span>
           </button>
-        </div>
+        </div> -->
 
         <div
           v-if="selectedBank"
@@ -437,7 +437,7 @@ const creditCardForm = ref<ICreditCardForm>({
         v-if="selectedPaymentType"
         class="pt-4 border-t"
       >
-        <UButton
+        <!-- <UButton
           :loading="isSubmitting"
           :disabled="!canProceed"
           block
@@ -450,7 +450,7 @@ const creditCardForm = ref<ICreditCardForm>({
           @click="proceedToCheckout"
         >
           Bayar Sekarang
-        </UButton>
+        </UButton> -->
       </div>
     </div>
   </UCard>
