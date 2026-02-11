@@ -297,20 +297,20 @@ const canProceed = computed(() => {
   return false
 })
 
-const broadcast = new BroadcastChannel('payment_status')
+// const broadcast = new BroadcastChannel('payment_status')
 
-onMounted(() => {
-  broadcast.onmessage = (event: BroadcastChannelEventMap) => {
-    console.log(event)
-    if (event.message.isTrusted) {
-      router.push({ to: '/payment/status', query: {
-        status: event.message.data.status,
-        invoice: paymentData.value?.data?.invoiceNumber || undefined,
-        trip: paymentData.value?.data?.tripName || undefined
-      } })
-    }
-  }
-})
+// onMounted(() => {
+//   broadcast.onmessage = (event: BroadcastChannelEventMap) => {
+//     console.log(event)
+//     if (event.message.isTrusted) {
+//       router.push({ to: '/payment/status', query: {
+//         status: event.message.data.status,
+//         invoice: paymentData.value?.data?.invoiceNumber || undefined,
+//         trip: paymentData.value?.data?.tripName || undefined
+//       } })
+//     }
+//   }
+// })
 
 // Cleanup on unmount
 onUnmounted(() => {

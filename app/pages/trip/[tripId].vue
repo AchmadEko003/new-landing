@@ -23,9 +23,6 @@ const {
   sanitizeHtml
 } = useTripDetail()
 
-// Refs for template usage
-const tripScheduleRef = ref()
-
 useSeoMeta({
   title: () => trip.value ? `${trip.value.name} - Peponi` : 'Trip Detail - Peponi',
   description: () => trip.value ? trip.value.headline : 'Detail trip di Peponi Travel. Temukan petualangan tak terlupakan yang sesuai dengan minat dan keinginan Anda.',
@@ -193,7 +190,7 @@ useSeoMeta({
 
           <!-- Map Image -->
           <div class="flex items-center justify-center">
-            <ImageResponsive
+            <ImageZoomed
               :img-url="`/trip/${trip.mapImage}.jpeg`"
               alt="Trip Map"
               class="rounded-xl w-full h-auto max-h-96 object-cover"
@@ -272,9 +269,13 @@ useSeoMeta({
                   </template>
                 </UCarousel>
               </div>
-              <div
+              <!-- <div
                 class="prose prose-sm max-w-none text-gray-700"
                 v-html="sanitizeHtml(item.content || '')"
+              /> -->
+              <UtilHtmlRender
+                :content="item.content || ''"
+                class="max-w-none text-gray-700"
               />
             </template>
           </UAccordion>

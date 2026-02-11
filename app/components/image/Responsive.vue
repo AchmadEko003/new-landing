@@ -2,7 +2,8 @@
   <div
     :class="['relative rounded-2xl overflow-hidden shadow-lg transition-transform',
              'duration-200 group bg-black/5 hover:scale-99',
-             url ? 'cursor-pointer' : '']"
+             url ? 'cursor-pointer' : '',
+             sizeImage]"
     @click="handleClick()"
   >
     <NuxtImg
@@ -10,7 +11,7 @@
       :src="imgSrc"
       :alt="title"
       loading="lazy"
-      :class="['w-full object-cover group-hover:scale-110 transition-transform duration-200', sizeImage]"
+      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
       placeholder="/assets/image-crashed.png"
       @contextmenu.prevent
     />

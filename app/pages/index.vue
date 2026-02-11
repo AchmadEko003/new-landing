@@ -5,6 +5,7 @@ import type { IFavoriteLocation } from '~~/shared/interface/IFavoriteLocation'
 import type { IImage } from '~~/shared/interface/IImage'
 import type { IUniqueExperience } from '~~/shared/interface/IUniqueExperience'
 import type { ITrip, ITripCard } from '~~/shared/interface/ITrip'
+import type { ICertificate } from '~~/shared/interface/ICertificate'
 
 const runtimeConfig = useRuntimeConfig()
 const baseUrl = runtimeConfig.public.apiBase
@@ -13,12 +14,15 @@ const { width } = useWindowSize()
 const store = useCountryStore()
 
 const { data } = await useLazyAsyncData('home', async () => {
-  const [countryRes, favLocationRes, uniqueRes, tripRes] = await Promise.allSettled([
+  const [countryRes, favLocationRes, uniqueRes, tripRes, certificateRes] = await Promise.allSettled([
     $fetch<IResponseList<ICountry>>(`${baseUrl}/Country/country.list`),
     $fetch<IResponseList<IFavoriteLocation>>(`${baseUrl}/FavouriteLocation`),
     $fetch<IResponseList<IUniqueExperience>>(`${baseUrl}/UniqueExperience`),
     $fetch<IResponseList<ITrip>>(
       `${baseUrl}/Trip/trip.list`
+    ),
+    $fetch<IResponseList<ICertificate>>(
+      `${baseUrl}/Certificate`
     )
   ])
 
@@ -32,6 +36,8 @@ const { data } = await useLazyAsyncData('home', async () => {
     = uniqueRes.status === 'fulfilled' ? uniqueRes.value?.data?.slice(0, 14) : []
   const tripTemp: ITrip[] | undefined
     = tripRes.status === 'fulfilled' ? tripRes.value?.data?.slice(0, 10) : []
+  const certificateTemp: ICertificate[] | undefined
+    = certificateRes.status === 'fulfilled' ? certificateRes.value?.data : []
 
   store.countryList = countryTemp
 
@@ -87,7 +93,7 @@ const { data } = await useLazyAsyncData('home', async () => {
     }))
   }
 
-  return { country, favLocation, uniqueExperience, trip }
+  return { country, favLocation, uniqueExperience, trip, certificate: certificateTemp }
 })
 </script>
 
@@ -151,7 +157,7 @@ const { data } = await useLazyAsyncData('home', async () => {
             terbaik
           </p>
         </div>
-        <!-- <GridCertificateGrid :certificates="reformattedCertificates" /> -->
+        <GridCertificateGrid :certificates="data?.certificate" />
       </div>
     </section>
   </div>

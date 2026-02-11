@@ -103,9 +103,11 @@ useHead({
           <div :class="['relative py-12 px-6 md:px-12 bg-gradient-to-br', statusConfig.bgGradient]">
             <!-- Decorative Elements -->
             <div class="absolute top-0 right-0 w-32 h-32 opacity-20">
-              <div class="text-8xl">{{ statusConfig.illustration }}</div>
+              <div class="text-8xl">
+                {{ statusConfig.illustration }}
+              </div>
             </div>
-            
+
             <div class="relative flex flex-col items-center text-center">
               <!-- Icon -->
               <div

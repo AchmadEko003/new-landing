@@ -17,12 +17,12 @@ interface IVaList {
   country: string
 }
 
-const props = defineProps({
-  formData: {
-    type: Object as () => Record<string, any>,
-    required: true
-  }
-})
+// const props = defineProps({
+//   formData: {
+//     type: Object as () => Record<string, any>,
+//     required: true
+//   }
+// })
 
 const baseUrl = useRuntimeConfig().public.apiBase
 const selectedPaymentType = ref<'virtual_account' | 'credit_card' | null>(null)
