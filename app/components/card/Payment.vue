@@ -1,16 +1,40 @@
 <script lang="ts" setup>
-// Payment type state
+import type { IResponseList } from '~~/shared/interface/IResponse'
+
 interface ICreditCardForm {
   cardName: string
   cardNumber: string
   expiryDate: string
   cvv: number | null
-
 }
+
+interface IVaList {
+  code: string
+  name: string
+  fee: number
+  is_Activated: boolean
+  icon: string
+  country: string
+}
+
+const props = defineProps({
+  formData: {
+    type: Object as () => Record<string, any>,
+    required: true
+  }
+})
 
 const baseUrl = useRuntimeConfig().public.apiBase
 const selectedPaymentType = ref<'virtual_account' | 'credit_card' | null>(null)
 const selectedBank = ref<{ code: string, name: string, icon: string } | null>(null)
+
+const { data: vaList, pending: vaListPending } = await useLazyFetch<IResponseList<IVaList>>(
+  `${baseUrl}/Booking/payment-list`,
+  {
+    method: 'GET',
+    key: 'va-list'
+  }
+)
 
 const switchPaymentType = (type: 'virtual_account' | 'credit_card') => {
   selectedPaymentType.value = type
@@ -27,10 +51,15 @@ const creditCardForm = ref<ICreditCardForm>({
   expiryDate: '',
   cvv: null
 })
+
+const selectBank = (bank: { code: string, name: string, icon: string }) => {
+  selectedBank.value = bank
+}
 </script>
 
 <template>
   <UCard>
+    {{ vaList }}
     <template #header>
       <h2 class="text-xl font-semibold">
         Pilih Metode Pembayaran
@@ -43,7 +72,7 @@ const creditCardForm = ref<ICreditCardForm>({
         <!-- Virtual Account Button -->
         <button
           :class="[
-            'group relative p-8 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-4 min-h-[160px] overflow-hidden',
+            'group relative p-8 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-4 min-h-[160px] overflow-hidden cursor-pointer',
             selectedPaymentType === 'virtual_account'
               ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-lg shadow-primary/20 scale-[1.02]'
               : 'border-gray-200 bg-white hover:border-primary/40 hover:shadow-md hover:scale-[1.01]'
@@ -124,7 +153,7 @@ const creditCardForm = ref<ICreditCardForm>({
         <!-- Credit Card Button -->
         <button
           :class="[
-            'group relative p-8 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-4 min-h-[160px] overflow-hidden',
+            'group relative p-8 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-4 min-h-[160px] overflow-hidden cursor-pointer',
             selectedPaymentType === 'credit_card'
               ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-lg shadow-primary/20 scale-[1.02]'
               : 'border-gray-200 bg-white hover:border-primary/40 hover:shadow-md hover:scale-[1.01]'
@@ -225,7 +254,7 @@ const creditCardForm = ref<ICreditCardForm>({
           </div>
         </div>
 
-        <!-- <div
+        <div
           v-if="vaListPending"
           class="flex justify-center py-8"
         >
@@ -242,10 +271,10 @@ const creditCardForm = ref<ICreditCardForm>({
           class="grid grid-cols-2 md:grid-cols-3 gap-3"
         >
           <button
-            v-for="bank in bankList"
+            v-for="bank in vaList?.data?.filter(item => item.is_Activated)"
             :key="bank.code"
             :class="[
-              'group relative p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-3 hover:shadow-md',
+              'group relative p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-3 hover:shadow-md cursor-pointer',
               selectedBank?.code === bank.code
                 ? 'border-primary bg-primary/5 shadow-md scale-[1.02]'
                 : 'border-gray-200 bg-white hover:border-primary/50'
@@ -264,7 +293,7 @@ const creditCardForm = ref<ICreditCardForm>({
 
             <div class="w-full h-12 flex items-center justify-center">
               <img
-                :src="bank.icon"
+                :src="`/assets/bank/${bank.code}.png`"
                 :alt="bank.name"
                 class="max-h-10 max-w-full object-contain transition-transform duration-300 group-hover:scale-110"
                 @error="
@@ -277,7 +306,7 @@ const creditCardForm = ref<ICreditCardForm>({
               bank.name
             }}</span>
           </button>
-        </div> -->
+        </div>
 
         <div
           v-if="selectedBank"
