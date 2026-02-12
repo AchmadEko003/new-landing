@@ -42,10 +42,14 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
       :dots="false"
       :ui="{
         item: '!p-0',
-        container: 'h-[55dvh]' // Shorter height than banner.vue
+        container: 'h-[70dvh]' // Shorter height than banner.vue
       }"
     >
       <div class="relative">
+        <h5 class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-white text-center text-5xl md:text-6xl font-extrabold">
+          {{ item.title }}
+        </h5>
+
         <!-- Shadow for opacity -->
         <div
           class="w-full h-full bg-black/10 absolute z-10 top-0 bottom-0 right-0 left-0"
@@ -54,7 +58,7 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
           provider="peponi"
           :src="`/banner/${item.imageUrl}.jpeg`"
           :alt="item.title"
-          class="object-cover w-full h-[55dvh]!"
+          class="object-cover w-full h-[70dvh]!"
           style="height: 100%; width: 100%"
           @contextmenu.prevent
         />

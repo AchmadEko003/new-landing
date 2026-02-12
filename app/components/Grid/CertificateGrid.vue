@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col gap-3">
     <!-- Responsive grid -->
-    <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+    <div class="flex flex-wrap justify-center gap-4">
       <div
         v-for="(certificate, index) in certificates"
         :key="certificate.name"
         :class="[
-          'rounded-lg overflow-hidden min-h-62.5 flex items-center',
+          'rounded-lg overflow-hidden min-h-62.5 flex justify-center items-center border border-gray-300',
           getGridSpan(index)
         ]"
       >
@@ -15,7 +15,8 @@
           :src="`/certificate/${certificate.name}.jpeg`"
           :alt="certificate.name"
           loading="lazy"
-          class="w-full object-center"
+          class="max-h-50 md:w-fit object-center"
+          @contextmenu.prevent
         />
       </div>
     </div>

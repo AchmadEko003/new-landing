@@ -30,7 +30,7 @@ const viewDetails = () => {
 
 <template>
   <div
-    class="group w-full cursor-pointer overflow-hidden rounded-xl bg-white"
+    class="group w-full cursor-pointer overflow-hidden rounded-xl bg-white border border-gray-300"
     @click="viewDetails"
   >
     <!-- Image Section -->

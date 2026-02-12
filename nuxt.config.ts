@@ -13,7 +13,9 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: true
-  }, app: {
+  },
+
+  app: {
     rootAttrs: {
       'data-vaul-drawer-wrapper': '',
       'class': 'bg-default'
@@ -29,10 +31,21 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { prerender: true },
+    '/info/about-us': { prerender: true },
+    '/contact-us': { prerender: true }
+    // '/destinasi-populer/**': { swr: true, prerender: true },
+    // '/trip/**': { swr: true, prerender: true }
   },
 
   compatibilityDate: '2025-01-15',
+
+  // nitro: {
+  //   prerender: {
+  //     crawlLinks: true,
+  //     routes: ['/']
+  //   }
+  // },
 
   eslint: {
     config: {

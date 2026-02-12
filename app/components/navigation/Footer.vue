@@ -49,6 +49,28 @@
           </template>
 
           <template #destinasi>
+            <div class="space-y-2">
+              <div
+                v-if="loadingFetch"
+                class="space-y-2"
+              >
+                <div class="h-4 bg-gray-300 rounded animate-pulse w-24" />
+                <div class="h-4 bg-gray-300 rounded animate-pulse w-20" />
+              </div>
+              <div
+                v-else
+                class="space-y-2"
+              >
+                <NuxtLink
+                  v-for="item in (countryList as ICountryHeaderMenu[])"
+                  :key="item.label"
+                  :to="item.to"
+                  class="block text-gray-600 hover:text-primary transition-colors"
+                >
+                  {{ item.label }}
+                </NuxtLink>
+              </div>
+            </div>
             <!-- <div class="space-y-2"> -->
             <!--     <NuxtLink v-for="country in country.getList" :key="country.uid" -->
             <!--         :to="`/destinasi-populer/${encodeURIComponent((country.name ?? '').trim().replace(/\s+/g, '-').toLowerCase())}_${country.uid}`" -->
@@ -105,7 +127,7 @@
       <!-- Desktop: Regular Layout -->
       <div class="hidden md:flex md:flex-wrap md:justify-between md:items-start gap-8">
         <!-- Tentang Kami -->
-        <div class="min-w-[180px]">
+        <div class="min-w-45">
           <div class="font-semibold mb-4 text-gray-900">
             Tentang kami
           </div>
@@ -197,7 +219,7 @@
         </div>
 
         <!-- Bantuan -->
-        <div class="min-w-[180px]">
+        <div class="min-w-45">
           <div class="font-semibold mb-4 text-gray-900">
             Bantuan
           </div>
