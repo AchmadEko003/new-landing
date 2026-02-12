@@ -176,20 +176,21 @@
         </div>
 
         <!-- Destinasi -->
-        <div class="min-w-[180px]">
+        <div class="min-w-45">
           <div class="font-semibold mb-4 text-gray-900">
             Destinasi
           </div>
           <ul class="space-y-3">
             <li
-              v-for="country in countryStore.countryList"
-              :key="country.uid"
+              v-for="country in (countryList as ICountryHeaderMenu[])"
+              :key="country.label"
             >
               <NuxtLink
-                :to="`/destinasi-populer/${encodeURIComponent((country.name ?? '').trim().replace(/\s+/g, '-').toLowerCase())}_${country.uid}`"
                 class="text-gray-600 hover:text-primary transition-colors"
+                :to="country.to"
               >
-                {{ country.name ?? '' }}
+                <!-- :to="`/destinasi-populer/${encodeURIComponent((country.name ?? '').trim().replace(/\s+/g, '-').toLowerCase())}_${country.uid}`" -->
+                {{ country.label ?? '' }}
               </NuxtLink>
             </li>
           </ul>
@@ -316,10 +317,13 @@
 
 <script setup lang="ts">
 import { getDataFooter } from '~/composables/footer/get'
+import { getListCountry } from '~/composables/country/list'
+import type { ICountryHeaderMenu } from '~~/shared/interface/ICountry'
 
-const countryStore = useCountryStore()
+// const countryStore = useCountryStore()
 
 const { aboutUs, termsCondition, loadingFetch } = await getDataFooter()
+const { data: countryList } = await getListCountry()
 
 // Accordion items for mobile sections
 const accordionItems = [

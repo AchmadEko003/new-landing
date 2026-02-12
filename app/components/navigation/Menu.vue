@@ -4,7 +4,7 @@ import { getListCountry } from '~/composables/country/list'
 
 const dialogState = ref<boolean>(false)
 
-const { data, pending } = await getListCountry()
+const { data } = await getListCountry()
 
 const itemsMobile = computed(() => {
   return [

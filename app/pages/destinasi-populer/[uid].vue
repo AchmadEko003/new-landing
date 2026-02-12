@@ -27,6 +27,8 @@ const { data: detailData, pending } = useFetch<IResponse<ICountryDetail>>(
 const reformatedDetail = computed(() => {
   if (detailData.value?.data) {
     return reformattedCountryDetail(detailData.value?.data)
+  } else {
+    return null
   }
 })
 
@@ -39,6 +41,13 @@ const sections = [
 
 <template>
   <image-loading v-if="pending" />
+  <UtilEmptyState
+    v-else-if="!detailData?.data"
+    url="/destinasi-populer"
+    button-text="Kembali ke daftar Destinasi"
+    title="Destinasi Tidak Ditemukan"
+    description="Destinasi yang kamu cari tidak tersedia. Coba jelajahi destinasi populer lainnya."
+  />
   <div
     v-else
     class="flex flex-col gap-7"
@@ -48,7 +57,7 @@ const sections = [
         provider="peponi"
         :src="`/country/${detailData?.data?.bannerName}.jpeg`"
         :alt="detailData?.data?.name"
-        class="object-cover w-full !h-[75dvh]"
+        class="object-cover w-full h-[75dvh]!"
         @contextmenu.prevent
       />
 

@@ -423,12 +423,13 @@ useSeoMeta({
       />
     </Transition>
   </div>
-  <div
+  <UtilEmptyState
     v-else
-    class="flex items-center justify-center h-[50dvh] md:h-[75dvh]"
-  >
-    <span class="text-gray-500">Trip not found.</span>
-  </div>
+    url="/trip"
+    button-text="Kembali ke Daftar Trip"
+    title="Trip Tidak Ditemukan"
+    description="Trip yang kamu cari tidak tersedia. Coba jelajahi trip lainnya."
+  />
 </template>
 
 <style scoped>

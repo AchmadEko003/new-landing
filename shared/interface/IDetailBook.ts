@@ -14,6 +14,7 @@ export interface IBookingPackage {
   additionalFee: boolean
   /** Minimum booking requirement */
   minimumBook: number
+  isSold: boolean
 }
 
 /**

@@ -46,58 +46,68 @@ const packages = computed(() => {
         :key="pkg.uid"
         class="rounded-2xl px-3 py-2"
       >
-        <div class="flex justify-between items-center">
-          <div class="flex-1">
-            <h4 class="font-bold text-lg flex items-center gap-2">
-              {{ pkg.name }}
-              <!-- <UTooltip v-if="pkg.caption" :delay-duration="0" :text="pkg.caption">
-                <UIcon name="i-heroicons-information-circle" class="size-6" />
-              </UTooltip> -->
-              <UPopover>
+        <div class="flex justify-between items-center gap-4">
+          <div class="flex-1 flex flex-col justify-center">
+            <div :class="['font-bold flex items-center flex-wrap text-lg gap-2', pkg.isSold === false ? 'text-gray-300' : '']">
+              <span class="flex items-center gap-2">
+                {{ pkg.name }}
+              </span>
+
+              <UPopover v-if="pkg.isSold">
                 <UIcon
                   name="i-heroicons-information-circle"
-                  class="size-6"
+                  class="size-6 cursor-pointer"
                 />
-
                 <template #content>
                   <div class="p-2 text-sm">
                     {{ pkg.caption }}
                   </div>
                 </template>
               </UPopover>
-            </h4>
-            <p class="font-bold text-lg">
+
+              <UBadge
+                v-else
+                variant="solid"
+                class="text-xs px-2 py-1"
+                :ui="{
+                  base: 'bg-gray-200 text-gray-500 font-bold'
+                }"
+              >
+                Fully Booked
+              </UBadge>
+            </div>
+            <p :class="['font-bold text-lg', pkg.isSold === false ? 'text-gray-300' : 'text-subPrimary']">
               {{ props.formatCurrency(pkg.price) }}
             </p>
           </div>
-          <div class="text-right">
-            <div class="flex items-center gap-2 mt-2">
+          <div class="flex items-center justify-center">
+            <div class="flex items-center gap-2">
               <UButton
                 icon="i-heroicons-minus"
                 size="sm"
                 variant="outline"
                 class="rounded-full active:scale-95 transition-transform"
                 :ui="{
-                  base: pkg.additionalFee
-                    ? 'text-gray-500 cursor-not-allowed ring-gray-500'
+                  base: pkg.additionalFee && pkg.isSold === false
+                    ? 'text-gray-300 cursor-not-allowed ring-gray-300'
                     : 'ring-subPrimary text-subPrimary hover:bg-subPrimary/10 active:bg-subPrimary/20 cursor-pointer'
                 }"
-                :disabled="pkg.additionalFee || !props.canRemovePackage(pkg.uid)"
-                @click="props.decrementPackageQuantity(pkg.uid)"
+                :disabled="pkg.additionalFee || !props.canRemovePackage(pkg.uid) || pkg.isSold === false"
+                @click="pkg.isSold ? props.decrementPackageQuantity(pkg.uid) : null"
               />
-              <span class="w-8 text-center text-lg font-bold">{{ props.getPackageQuantity(pkg.uid) }}</span>
+              <span :class="['w-8 text-center text-lg font-bold', pkg.isSold === false ? 'text-gray-300' : '']">{{ props.getPackageQuantity(pkg.uid) }}</span>
               <UButton
                 icon="i-heroicons-plus"
                 size="sm"
                 variant="outline"
                 class="rounded-full active:scale-95 transition-transform"
                 :ui="{
-                  base: pkg.additionalFee
-                    ? 'text-gray-500 cursor-not-allowed ring-gray-500'
+                  base: pkg.additionalFee && pkg.isSold === false
+                    ? 'text-gray-300 cursor-not-allowed ring-gray-300'
                     : 'ring-subPrimary text-subPrimary hover:bg-subPrimary/10 active:bg-subPrimary/20 cursor-pointer'
                 }"
-                :disabled="pkg.additionalFee"
-                @click="props.incrementPackageQuantity(pkg.uid)"
+                :disabled="pkg.additionalFee || pkg.isSold === false"
+                @click="pkg.isSold ? props.incrementPackageQuantity(pkg.uid) : null"
               />
             </div>
           </div>

@@ -12,7 +12,7 @@ const { y } = useWindowScroll({
   behavior: 'smooth'
 })
 
-const { data: pengalamanUnikData } = await useLazyFetch<
+const { data: pengalamanUnikData, pending } = await useLazyFetch<
   IResponse<IUniqueExperience[]>
 >(() => `${baseUrl}/UniqueExperience`, {
   key: `unique-experience${categoryUid.value ? '-' + categoryUid.value : ''}`,
@@ -74,17 +74,17 @@ useSeoMeta({
       @change="doFilter"
     />
 
-    <ClientOnly>
-      <template #fallback>
-        <div class="flex flex-col gap-10">
-          <NavigationSectionHeader title="Pengalaman Unik" />
-          <div
-            class="w-[95%] md:w-[70%] mx-auto h-96 flex items-center justify-center"
-          >
-            <span class="text-gray-500">Loading experiences...</span>
-          </div>
+    <div v-if="!pengalamanUnikData || pending">
+      <div class="flex flex-col gap-10">
+        <NavigationSectionHeader title="Pengalaman Unik" />
+        <div
+          class="w-[95%] md:w-[70%] mx-auto h-96 flex items-center justify-center"
+        >
+          <span class="text-gray-500">Loading experiences...</span>
         </div>
-      </template>
+      </div>
+    </div>
+    <ClientOnly>
       <div class="flex flex-col gap-10">
         <NavigationSectionHeader title="Pengalaman Unik" />
         <!-- Use CSS classes instead of reactive width -->

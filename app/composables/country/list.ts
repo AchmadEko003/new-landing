@@ -22,7 +22,7 @@ export const getListCountry = async () => {
 
   loading = false
 
-  return { data: res as ICountryHeaderMenu, pending: loading }
+  return { data: res as ICountryHeaderMenu[], pending: loading }
 }
 
 const reformattedTodos = (payload: ICountry[] | undefined): ICountryHeaderMenu[] => {
