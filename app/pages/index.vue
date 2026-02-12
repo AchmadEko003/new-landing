@@ -95,6 +95,18 @@ const { data } = await useLazyAsyncData('home', async () => {
 
   return { country, favLocation, uniqueExperience, trip, certificate: certificateTemp }
 })
+
+useSeoMeta({
+  title: 'Peponi Travel - Jelajahi Dunia Seperti Orang Lokal',
+  description: 'Peponi Travel mengajak Anda untuk menjelajahi destinasi impian dengan pengalaman lokal yang autentik. Temukan petualangan tak terlupakan bersama kami.',
+  ogTitle: 'Peponi Travel - Jelajahi Dunia Seperti Orang Lokal',
+  ogDescription: 'Peponi Travel mengajak Anda untuk menjelajahi destinasi impian dengan pengalaman lokal yang autentik. Temukan petualangan tak terlupakan bersama kami.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Peponi Travel Logo',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Peponi Travel - Jelajahi Dunia Seperti Orang Lokal',
+  twitterDescription: 'Peponi Travel mengajak Anda untuk menjelajahi destinasi impian dengan pengalaman lokal yang autentik. Temukan petualangan tak terlupakan bersama kami.'
+})
 </script>
 
 <template>
@@ -157,7 +169,7 @@ const { data } = await useLazyAsyncData('home', async () => {
             terbaik
           </p>
         </div>
-        <GridCertificateGrid :certificates="data?.certificate" />
+        <GridCertificateGrid :certificates="data?.certificate || []" />
       </div>
     </section>
   </div>

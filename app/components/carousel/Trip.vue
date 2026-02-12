@@ -66,7 +66,7 @@ const prev = () => {
         }"
       >
         <CardTrip
-          v-if="index < (listImages?.length || 0) - 2"
+          v-if="index < (props.items?.length || 0)"
           :image-src="item.imageSrc"
           :title="item.title"
           :days="item.days"
@@ -77,12 +77,13 @@ const prev = () => {
         />
         <div
           v-else-if="
-            index === (listImages?.length || 0) - 2 && listImages.length > 8
+            index === (listImages?.length || 0) - 2 && listImages.length > 6
           "
           :class="[
-            'border-[1px] border-gray-200 hover:border-primary transition-colors min-h-[488px] md:min-h-[608px]',
+            'border border-gray-200 cursor-pointer hover:border-primary transition-colors min-h-122 md:min-h-152',
             'w-[15em] md:w-[20em] p-3 flex justify-center items-center rounded-2xl font-bold'
           ]"
+          @click="$router.push('/trip')"
         >
           <p class="text-center items-center">
             Lihat semua Trip
@@ -92,7 +93,7 @@ const prev = () => {
             class="font-bold ml-1"
           />
         </div>
-        <div v-else />
+        <!-- <div v-else /> -->
       </UCarousel>
 
       <div class="transform flex gap-2 justify-end mt-3 mr-3 md:mr-24">
