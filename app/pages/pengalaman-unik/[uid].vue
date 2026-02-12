@@ -25,7 +25,7 @@ const bannerList = computed(() => {
 
 const reformatTrip = (payload: IUniqueExperienceTrips[]): ITripCard[] => {
   return payload.map(item => ({
-    imageSrc: item.banner?.[0] || '',
+    imageSrc: item.banner,
     url: `/trip/${item.uid}`,
     title: item.name,
     days: String(item.days),
