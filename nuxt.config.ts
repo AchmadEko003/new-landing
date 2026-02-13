@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true },
+    // '/': { prerender: true },
     '/info/about-us': { prerender: true },
     '/contact-us': { prerender: true }
     // '/destinasi-populer/**': { swr: true, prerender: true },
