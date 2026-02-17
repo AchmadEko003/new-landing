@@ -23,19 +23,23 @@ const formatScheduleDate = (dateStr: string): string => {
   if (parts.length !== 2) return dateStr
 
   const formatSingleDate = (d: string) => {
-    const [month, day, year] = d.trim().split('/')
+    const [month = '', day = '', year = ''] = d.trim().split('/')
+    if (!month || !day || !year) return d.trim()
     const monthIndex = parseInt(month) - 1
+    if (monthIndex < 0 || monthIndex > 11) return d.trim()
     return `${parseInt(day)} ${monthsShort[monthIndex]} ${year}`
   }
 
-  return `${formatSingleDate(parts[0])} - ${formatSingleDate(parts[1])}`
+  return `${formatSingleDate(parts[0] || '')} - ${formatSingleDate(parts[1] || '')}`
 }
 
 // Format due date (05/04/2026 -> 5 April 2026, 23:59)
-const formatDueDate = (dateStr: string): string => {
+const formatDueDate = (dateStr: string | null): string => {
   if (!dateStr) return ''
-  const [month, day, year] = dateStr.split('/')
+  const [month = '', day = '', year = ''] = dateStr.split('/')
+  if (!month || !day || !year) return dateStr
   const monthIndex = parseInt(month) - 1
+  if (monthIndex < 0 || monthIndex > 11) return dateStr
   // Add default time 23:59 for due date
   return `${parseInt(day)} ${monthsFull[monthIndex]} ${year}, 23:59`
 }
@@ -50,7 +54,8 @@ interface IPaymentDetail {
   jumlahPeserta: number
   invoiceNumber: string
   netTotalPrice: number
-  dueDate: string
+  dueDate: string | null
+  status: 'PAID' | 'UNPAID' | 'CANCELLED' | 'EXPIRED' | string
 }
 
 // VA response interface
@@ -107,6 +112,65 @@ const vaResponse = ref<IVaResponse | null>(null)
 const ccResponse = ref<ICcResponse | null>(null)
 const paymentStatus = ref<string>('UNPAID')
 const statusCheckInterval = ref<ReturnType<typeof setInterval> | null>(null)
+
+const currentPaymentStatus = computed(() => paymentData.value?.data?.status || 'UNPAID')
+const canShowPaymentMethod = computed(() => currentPaymentStatus.value === 'UNPAID')
+
+const paymentStatusConfig = computed(() => {
+  const status = currentPaymentStatus.value
+
+  if (status === 'PAID') {
+    return {
+      label: 'PAID',
+      icon: 'i-heroicons-check',
+      iconBg: 'bg-green-100',
+      iconColor: 'text-green-600',
+      title: 'Pembayaran Berhasil',
+      message: 'Terima kasih! Pembayaran untuk pesanan ini sudah kami terima.',
+      boxClass: 'bg-green-50 border-green-200 text-green-700'
+    }
+  }
+
+  if (status === 'CANCELLED') {
+    return {
+      label: 'CANCELLED',
+      icon: 'i-heroicons-x-mark',
+      iconBg: 'bg-red-100',
+      iconColor: 'text-red-600',
+      title: 'Pesanan Dibatalkan',
+      message: 'Pesanan ini telah dibatalkan.',
+      boxClass: 'bg-red-50 border-red-200 text-red-700'
+    }
+  }
+
+  if (status === 'EXPIRED') {
+    return {
+      label: 'EXPIRED',
+      icon: 'i-heroicons-x-mark',
+      iconBg: 'bg-red-100',
+      iconColor: 'text-red-600',
+      title: 'Pembayaran Kedaluwarsa',
+      message: 'Batas waktu pembayaran telah berakhir. Silakan lakukan pemesanan ulang.',
+      boxClass: 'bg-red-50 border-red-200 text-red-700'
+    }
+  }
+
+  return {
+    label: 'UNPAID',
+    icon: 'i-heroicons-clock',
+    iconBg: 'bg-red-100',
+    iconColor: 'text-red-600',
+    title: 'Menunggu Pembayaran',
+    message: 'Mohon selesaikan pembayaran sebelum batas waktu.',
+    boxClass: 'bg-red-50 border-red-200 text-red-700'
+  }
+})
+
+watch(() => paymentData.value?.data?.status, (status) => {
+  if (status) {
+    paymentStatus.value = status
+  }
+}, { immediate: true })
 
 // Fetch VA list
 const { data: vaListData, pending: vaListPending } = await useLazyFetch<IVaListResponse>(
@@ -400,7 +464,7 @@ useHead({
 
             <div class="space-y-6">
               <!-- Trip Info -->
-              <div class="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 border border-primary/20">
+              <div class="bg-linear-to-br from-primary/5 to-primary/10 rounded-xl p-5 border border-primary/20">
                 <div class="flex items-start gap-4">
                   <div class="w-12 h-12 rounded-lg bg-white shadow-sm flex items-center justify-center shrink-0">
                     <UIcon
@@ -458,24 +522,77 @@ useHead({
                       <span class="text-sm text-gray-600">No. Invoice</span>
                       <span class="font-semibold text-gray-900">{{ paymentData.data.invoiceNumber }}</span>
                     </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm text-gray-600">Status</span>
+                      <span
+                        class="font-semibold"
+                        :class="paymentStatusConfig.label === 'PAID' ? 'text-green-600' : 'text-red-600'"
+                      >
+                        {{ paymentStatusConfig.label }}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div class="bg-red-50 rounded-lg p-4 space-y-3 border border-red-200">
-                  <div class="flex items-center gap-2 text-red-700 text-sm mb-2">
+                <div
+                  :class="[
+                    'rounded-lg p-4 space-y-3 border',
+                    canShowPaymentMethod ? 'bg-red-50 border-red-200' : paymentStatusConfig.boxClass
+                  ]"
+                >
+                  <div
+                    class="flex items-center gap-2 text-sm mb-2"
+                    :class="canShowPaymentMethod ? 'text-red-700' : paymentStatusConfig.iconColor"
+                  >
                     <UIcon
-                      name="i-heroicons-exclamation-triangle"
+                      :name="canShowPaymentMethod ? 'i-heroicons-exclamation-triangle' : paymentStatusConfig.icon"
                       class="w-4 h-4"
                     />
-                    <span class="font-medium">Batas Waktu Pembayaran</span>
+                    <span class="font-medium">{{ canShowPaymentMethod ? 'Batas Waktu Pembayaran' : 'Status Pembayaran' }}</span>
                   </div>
-                  <div class="space-y-1">
+
+                  <div
+                    v-if="canShowPaymentMethod"
+                    class="space-y-1"
+                  >
                     <div class="text-xl font-bold text-red-600">
                       {{ formatDueDate(paymentData.data.dueDate) }}
                     </div>
                     <p class="text-xs text-red-600/80">
                       Mohon selesaikan pembayaran sebelum batas waktu
                     </p>
+                  </div>
+
+                  <div
+                    v-else
+                    class="flex items-start gap-3"
+                  >
+                    <!-- <div
+                      :class="[
+                        'w-10 h-10 rounded-full flex items-center justify-center shrink-0',
+                        paymentStatusConfig.iconBg
+                      ]"
+                    >
+                      <UIcon
+                        :name="paymentStatusConfig.icon"
+                        :class="['w-5 h-5', paymentStatusConfig.iconColor]"
+                      />
+                    </div> -->
+                    <div>
+                      <p class="font-semibold text-gray-900 mb-1">
+                        {{ paymentStatusConfig.title }}
+                      </p>
+                      <p class="text-sm text-gray-600">
+                        {{ paymentStatusConfig.message }} Silahkan
+                        <NuxtLink
+                          v-if="paymentStatusConfig.label === 'CANCELLED'"
+                          to="/contact-us"
+                          class="inline-flex mt-1 text-sm font-medium text-primary hover:underline"
+                        >
+                          hubungi tim kami
+                        </NuxtLink>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -503,7 +620,7 @@ useHead({
           </UCard>
 
           <!-- Payment Method Selection Card -->
-          <UCard>
+          <UCard v-if="canShowPaymentMethod">
             <template #header>
               <h2 class="text-xl font-semibold">
                 Pilih Metode Pembayaran

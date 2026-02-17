@@ -5,8 +5,9 @@ import type { IResponse } from '~~/shared/interface/IResponse'
 const baseUrl = useRuntimeConfig().public.apiBase
 const { width } = useWindowSize()
 const computedWidth = computed(() => width.value || 0)
+const isMobile = computed(() => computedWidth.value < 768)
 
-const carousel = ref<any>(null)
+const carousel = ref<{ emblaApi?: { scrollNext: () => void, scrollPrev: () => void } } | null>(null)
 const emblaApi = computed(() => carousel.value?.emblaApi)
 
 const next = () => {
@@ -27,6 +28,8 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
     key: 'sub-banners'
   }
 )
+
+const bannerItems = computed(() => (aboutBannersData.value?.data as IBanner[]) || [])
 </script>
 
 <template>
@@ -35,14 +38,14 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
       v-if="aboutBannersData?.meta.totalItem"
       ref="carousel"
       v-slot="{ item }"
-      :items="(aboutBannersData?.data as IBanner[]) || []"
+      :items="bannerItems"
       class="w-full p-0"
-      :autoplay="true"
+      :autoplay="!isMobile"
       :loop="true"
       :dots="false"
       :ui="{
         item: '!p-0',
-        container: 'h-[70dvh]' // Shorter height than banner.vue
+        container: 'h-[70svh] md:h-[70dvh]' // Use stable viewport height on mobile
       }"
     >
       <div class="relative">
@@ -58,8 +61,12 @@ const { data: aboutBannersData } = useLazyFetch<IResponse<IBanner[]>>(
           provider="peponi"
           :src="`/banner/${item.imageUrl}.jpeg`"
           :alt="item.title"
-          class="object-cover w-full h-[70dvh]!"
-          style="height: 100%; width: 100%"
+          class="object-cover w-full h-[70svh] md:h-[70dvh]"
+          sizes="100vw md:100vw"
+          format="jpeg"
+          quality="65"
+          loading="lazy"
+          decoding="async"
           @contextmenu.prevent
         />
 

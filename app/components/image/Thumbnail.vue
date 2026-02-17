@@ -29,6 +29,8 @@ const handleClick = () => {
       :src="imgSrc"
       :alt="title"
       loading="lazy"
+      decoding="async"
+      quality="65"
       class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
       placeholder="/assets/image-crashed.png"
       @contextmenu.prevent

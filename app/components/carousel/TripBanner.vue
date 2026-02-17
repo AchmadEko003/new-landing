@@ -21,6 +21,9 @@
           :alt="`${tripName} - Image ${images.indexOf(item) + 1}`"
           class="object-cover w-full h-[55dvh]! md:h-[75dvh]!"
           loading="lazy"
+          decoding="async"
+          quality="65"
+          placeholder="/assets/image-crashed.png"
           @contextmenu.prevent
         />
       </div>
