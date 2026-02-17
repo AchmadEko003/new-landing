@@ -281,7 +281,7 @@ watch(schedulesError, (error) => {
           :key="schedule.uidSchedule"
           :title="formatDateRange(schedule.startDate, schedule.endDate)"
           :price="schedule.price"
-          :badge="schedule.quota > 10 ? `Kursi habis segera` : schedule.quota <= 10 ? `Tinggal ${schedule.quota} Kursi` : 'Kursi habis'"
+          :badge="schedule.quota > 10 ? `Kursi habis segera` : schedule.quota <= 10 && schedule.quota > 0 ? `Tinggal ${schedule.quota} Kursi` : 'Kursi habis'"
           :badge-variant="schedule.quota > 10 ? 'green' : schedule.quota <= 10 && schedule.quota > 0 ? 'red' : 'gray'"
           class="animate-fade-in"
           :style="{ animationDelay: `${index * 100}ms` }"
