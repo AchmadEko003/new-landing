@@ -31,11 +31,13 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    // '/': { prerender: true },
+    '/': { swr: true },
     '/info/about-us': { prerender: true },
-    '/contact-us': { prerender: true }
-    // '/destinasi-populer/**': { swr: true, prerender: true },
-    // '/trip/**': { swr: true, prerender: true }
+    '/contact-us': { prerender: true },
+    '/destinasi-populer/**': { swr: true },
+    '/trip/**': { swr: true },
+    '/book/**': { ssr: false },
+    '/payment/**': { ssr: false }
   },
 
   compatibilityDate: '2025-01-15',

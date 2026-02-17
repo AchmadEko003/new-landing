@@ -24,6 +24,7 @@ const voucherCode = defineModel<string>('voucherCode', { default: '' })
 const packages = computed(() => {
   if (!props.data.package) return []
   const mainPackages = props.data.package.filter(p => !p.additionalFee)
+  console.log(mainPackages, props.data.package.filter(p => !p.additionalFee))
   const additionalPackages = props.data.package.filter(p => p.additionalFee)
   return [...mainPackages, ...additionalPackages]
 })

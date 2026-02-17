@@ -55,6 +55,16 @@ const creditCardForm = ref<ICreditCardForm>({
 const selectBank = (bank: { code: string, name: string, icon: string }) => {
   selectedBank.value = bank
 }
+
+const submitPayment = () => {
+  if (selectedPaymentType.value === 'virtual_account') {
+    // Proses pembayaran dengan Virtual Account
+    console.log('Memproses pembayaran dengan Virtual Account:', selectedBank.value)
+  } else if (selectedPaymentType.value === 'credit_card') {
+    // Proses pembayaran dengan Kartu Kredit
+    console.log('Memproses pembayaran dengan Kartu Kredit:', creditCardForm.value)
+  }
+}
 </script>
 
 <template>
@@ -352,7 +362,7 @@ const selectBank = (bank: { code: string, name: string, icon: string }) => {
           </div>
         </div>
 
-        <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 shadow-sm">
+        <div class="bg-linear-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 shadow-sm">
           <div class="flex items-start gap-3">
             <UIcon
               name="i-heroicons-shield-check"
@@ -464,7 +474,7 @@ const selectBank = (bank: { code: string, name: string, icon: string }) => {
       <!-- Proceed Button -->
       <div
         v-if="selectedPaymentType"
-        class="pt-4 border-t"
+        class="pt-4 border-t border-gray-300"
       >
         <!-- <UButton
           :loading="isSubmitting"
@@ -480,6 +490,10 @@ const selectBank = (bank: { code: string, name: string, icon: string }) => {
         >
           Bayar Sekarang
         </UButton> -->
+        <UButton
+          label="Bayar Sekarang"
+          @click="submitPayment"
+        />
       </div>
     </div>
   </UCard>

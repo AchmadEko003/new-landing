@@ -281,8 +281,8 @@ watch(schedulesError, (error) => {
           :key="schedule.uidSchedule"
           :title="formatDateRange(schedule.startDate, schedule.endDate)"
           :price="schedule.price"
-          :badge="`Tinggal ${schedule.quota} Kursi`"
-          badge-variant="red"
+          :badge="schedule.quota > 10 ? `Kursi habis segera` : schedule.quota <= 10 ? `Tinggal ${schedule.quota} Kursi` : 'Kursi habis'"
+          :badge-variant="schedule.quota > 10 ? 'green' : schedule.quota <= 10 && schedule.quota > 0 ? 'red' : 'gray'"
           class="animate-fade-in"
           :style="{ animationDelay: `${index * 100}ms` }"
         >
@@ -303,10 +303,12 @@ watch(schedulesError, (error) => {
               <div class="pt-6 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-3">
                   <UButton
+                    v-if="schedule.quota > 0"
                     color="primary"
                     size="lg"
                     :to="`/book/${schedule.uidSchedule}`"
-                    class="flex-1 font-semibold rounded-xl hover:scale-[1.02] transition-transform duration-200"
+                    :class="['flex-1 font-semibold rounded-xl', schedule.quota === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] transition-transform duration-200']"
+                    :disabled="schedule.quota === 0"
                   >
                     <!-- <UIcon name="i-heroicons-shopping-bag" class="w-5 h-5 mr-2" /> -->
                     <ImageIcon
@@ -320,7 +322,9 @@ watch(schedulesError, (error) => {
                     variant="outline"
                     color="primary"
                     size="lg"
+                    to="/contact-us"
                     class="font-semibold rounded-xl cursor-pointer hover:scale-[1.02] transition-transform duration-200"
+                    :block="schedule.quota === 0"
                   >
                     <UIcon
                       name="i-heroicons-chat-bubble-left-right"
