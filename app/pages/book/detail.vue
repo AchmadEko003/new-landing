@@ -494,7 +494,7 @@ const handlePaymentError = (error: string) => {
       <div
         class="container mx-auto px-4 max-w-4xl"
       >
-      <CardPayment />
+      <!-- <CardPayment /> -->
         <!-- Header -->
         <div class="text-center mb-8">
           <h1 class="text-3xl font-bold text-gray-900 mb-2">
