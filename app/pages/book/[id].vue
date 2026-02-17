@@ -354,10 +354,16 @@ const removePackage = (packageUid: string) => {
   const index = bookingStep.value.selectedPackages.findIndex(
     p => p.packageUid === packageUid
   )
+
   if (index !== -1) {
     bookingStep.value.selectedPackages.splice(index, 1)
-    calculateTotal()
   }
+
+  if (bookingStep.value.selectedPackages.length === 0) {
+    bookingStep.value.selectedExtraPackages = []
+  }
+
+  calculateTotal()
 }
 
 const updatePackageQuantity = (packageUid: string, newQuantity: number) => {
@@ -435,14 +441,24 @@ watch(
         const existing = bookingStep.value.selectedPackages.find(
           p => p.packageUid === pkg.uid
         )
-        if (existing) {
-          existing.quantity = totalMainQty
-        } else {
-          // kalau belum ada di selectedPackages, tambahkan otomatis
-          bookingStep.value.selectedPackages.push({
-            packageUid: pkg.uid,
-            quantity: totalMainQty
-          })
+        if (totalMainQty > 0) {
+          if (existing) {
+            existing.quantity = totalMainQty
+          } else {
+            // kalau belum ada di selectedPackages, tambahkan otomatis
+            bookingStep.value.selectedPackages.push({
+              packageUid: pkg.uid,
+              quantity: totalMainQty
+            })
+          }
+        } else if (existing) {
+          // Remove additionalFee package if no main packages selected
+          const idx = bookingStep.value.selectedPackages.findIndex(
+            p => p.packageUid === pkg.uid
+          )
+          if (idx !== -1) {
+            bookingStep.value.selectedPackages.splice(idx, 1)
+          }
         }
       })
 
