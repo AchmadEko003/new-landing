@@ -549,7 +549,7 @@ const claimVoucher = async () => {
 
   try {
     const response = await $fetch<IVoucherResponse>(
-      `${baseUrl}/Trip/trip.claim-voucher?code=${voucherCode.value}`
+      `${baseUrl}/Trip/trip.claim-voucher?code=${voucherCode.value}&trip=${bookingId.value}`
     )
 
     if (response.data.isValid) {
@@ -561,7 +561,8 @@ const claimVoucher = async () => {
       }
       voucherError.value = ''
     } else {
-      voucherError.value = 'Invalid voucher code'
+      // voucherError.value = 'Invalid voucher code'
+      voucherError.value = response.meta.message || 'Invalid voucher code'
       appliedVoucher.value = null
     }
   } catch (error) {
