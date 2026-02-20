@@ -214,6 +214,17 @@ const canRemovePackage = (packageUid: string) => {
   return currentQuantity > 0
 }
 
+const canIncrementPackage = (packageUid: string) => {
+  const pkg = booking.value?.package?.find(p => p.uid === packageUid)
+  if (!pkg || pkg.additionalFee) return false
+
+  const bookedLimit = booking.value?.booked
+  if (!bookedLimit || bookedLimit <= 0) return true
+
+  const minQuantity = getMinimumQuantity(pkg)
+  return totalGuestCount.value + minQuantity <= bookedLimit
+}
+
 // Computed for minimum quantity based on selected package
 const getMinimumQuantity = (pkg: IBookingPackage) => {
   return pkg.minimumBook || 1
@@ -941,6 +952,7 @@ useHead({
               :voucher-loading="voucherLoading"
               :voucher-error="voucherError"
               :can-remove-package="canRemovePackage"
+              :can-increment-package="canIncrementPackage"
               :get-package-quantity="getPackageQuantity"
               :increment-package-quantity="incrementPackageQuantity
               "

@@ -39,6 +39,7 @@ export interface IDetailBook {
   name: string
   /** List of banner image IDs */
   bannerList: string[]
+  booked: number
   /** Start date of the trip */
   startDate: string
   /** End date of the trip */

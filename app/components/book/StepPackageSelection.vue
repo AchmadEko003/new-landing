@@ -10,6 +10,7 @@ const props = defineProps<{
   voucherLoading: boolean
   voucherError: string
   canRemovePackage: (uid: string) => boolean
+  canIncrementPackage: (uid: string) => boolean
   getPackageQuantity: (uid: string) => number
   incrementPackageQuantity: (uid: string) => void
   decrementPackageQuantity: (uid: string) => void
@@ -89,7 +90,7 @@ const packages = computed(() => {
                 variant="outline"
                 class="rounded-full active:scale-95 transition-transform"
                 :ui="{
-                  base: pkg.additionalFee && pkg.isSold === false
+                  base: pkg.additionalFee || pkg.isSold === false
                     ? 'text-gray-300 cursor-not-allowed ring-gray-300'
                     : 'ring-subPrimary text-subPrimary hover:bg-subPrimary/10 active:bg-subPrimary/20 cursor-pointer'
                 }"
@@ -103,12 +104,12 @@ const packages = computed(() => {
                 variant="outline"
                 class="rounded-full active:scale-95 transition-transform"
                 :ui="{
-                  base: pkg.additionalFee && pkg.isSold === false
+                  base: pkg.additionalFee || pkg.isSold === false || !props.canIncrementPackage(pkg.uid)
                     ? 'text-gray-300 cursor-not-allowed ring-gray-300'
                     : 'ring-subPrimary text-subPrimary hover:bg-subPrimary/10 active:bg-subPrimary/20 cursor-pointer'
                 }"
-                :disabled="pkg.additionalFee || pkg.isSold === false"
-                @click="pkg.isSold ? props.incrementPackageQuantity(pkg.uid) : null"
+                :disabled="pkg.additionalFee || pkg.isSold === false || !props.canIncrementPackage(pkg.uid)"
+                @click="pkg.isSold && props.canIncrementPackage(pkg.uid) ? props.incrementPackageQuantity(pkg.uid) : null"
               />
             </div>
           </div>

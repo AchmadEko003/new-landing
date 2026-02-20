@@ -12,11 +12,11 @@ export const useSanitize = () => {
           'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
           'ul', 'ol', 'li',
           'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td',
-          'a'
+          'a', 'img'
         ],
         ALLOWED_ATTR: [
-          'style', 'class', 'href', 'target', 'rel',
-          'data-row', 'colspan', 'rowspan'
+          'style', 'class', 'href', 'target', 'rel', 'width', 'height',
+          'data-row', 'colspan', 'rowspan', 'src', 'alt', 'title'
         ],
         ALLOWED_STYLES: {
           '*': {
