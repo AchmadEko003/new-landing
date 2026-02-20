@@ -32,8 +32,8 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { swr: true },
-    // '/info/about-us': { prerender: true },
-    // '/contact-us': { prerender: true },
+    '/info/about-us': { prerender: true },
+    '/contact-us': { prerender: true },
     '/destinasi-populer/**': { swr: true },
     '/trip/**': { swr: true },
     '/book/**': { ssr: false },
