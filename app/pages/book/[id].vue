@@ -9,7 +9,7 @@ import type {
 } from '~~/shared/interface/IDetailBook'
 import type { IVoucher, IVoucherResponse } from '~~/shared/interface/IVoucher'
 import type { IVaListResponse } from '~~/shared/interface/IVaList'
-import type { IBookingConfirmation } from '~~/shared/interface/IBooking'
+// import type { IBookingConfirmation } from '~~/shared/interface/IBooking'
 import type { IPaymentResponse } from '~~/shared/interface/IPayment'
 import { formatCurrency } from '~~/shared/script/currency'
 import {
@@ -67,6 +67,13 @@ const bookingStep = ref<ExtendedBookingStep>({
 // Payment mode state
 const fullPayment = ref(false)
 
+// Payment method type state
+const selectedPaymentType = ref<'credit_card' | 'virtual_account' | null>(null)
+
+// Ref untuk StepPayment component
+const stepPaymentRef = ref()
+const cardPaymentRef = ref()
+
 // Voucher state
 const voucherCode = ref('')
 const appliedVoucher = ref<IVoucher | null>(null)
@@ -77,7 +84,7 @@ const voucherError = ref('')
 const showSuccessDialog = ref(false)
 const showPaymentLoadingModal = ref(false)
 const paymentResponse = ref<IPaymentResponse | null>(null)
-const bookingLoading = ref(false)
+const bookingLoading = computed(() => cardPaymentRef.value?.loading || false)
 const paymentModalInvoiceId = ref<string>('')
 const paymentModalRedirectUrl = ref<string>('')
 
@@ -111,12 +118,6 @@ watch(
   }
 )
 
-// Payment method type state
-const selectedPaymentType = ref<'credit_card' | 'virtual_account' | null>(null)
-
-// Ref untuk StepPayment component
-const stepPaymentRef = ref()
-
 // Guest form state
 const guestForm = ref<IGuestForm>({
   guests: [
@@ -134,7 +135,7 @@ const genderOptions = ['Mr', 'Mrs', 'Ms']
 
 // Fetch payment methods from VA-list API
 const { data: vaListData, pending: vaListPending }
-  = await useFetch<IVaListResponse>(`${baseUrl}/Booking/payment-list`)
+  = await useLazyFetch<IVaListResponse>(`${baseUrl}/Booking/payment-list`)
 
 // Custom payment method type with bank code
 interface PaymentMethodWithCode extends Omit<IPaymentMethod, 'type'> {
@@ -602,183 +603,228 @@ const toggleGuestDetails = () => {
   showGuestDetails.value = !showGuestDetails.value
 }
 
-// Confirm booking with proper parameter structure
-const confirmBooking = async () => {
-  // For credit card payment
-  if (selectedPaymentType.value === 'credit_card') {
-    // Process payment using the component's method
-    if (!stepPaymentRef.value) {
-      console.error('StepPayment component not found')
-      return
-    }
-
-    // Validate that all required data is present
-    if (!bookingId.value) {
-      console.error('Trip schedule UID is empty')
-      return
-    }
-
-    if (bookingStep.value.selectedPackages.length === 0) {
-      console.error('No packages selected')
-      return
-    }
-
-    if (guestForm.value.guests.length === 0) {
-      console.error('No guests added')
-      return
-    }
-
-    bookingLoading.value = true
-
-    try {
-      // Build payment data
-      const paymentData = {
-        tripScheduleUid: bookingId.value,
-        package: bookingStep.value.selectedPackages.map(
-          selection => ({
-            uid: selection.packageUid,
-            quantity: selection.quantity
-          })
-        ),
-        extraPackage: bookingStep.value.selectedExtraPackages.map(
-          selection => ({
-            uid: selection.packageUid,
-            quantity: selection.selectedGuestIndexes.length,
-            guest: selection.selectedGuestIndexes.map(
-              (guestIndex) => {
-                const guest
-                  = guestForm.value.guests[guestIndex]
-                if (!guest) return ''
-                const summary: GuestSummary = {
-                  fullNameAsPerPassport:
-                    guest.fullNameAsPerPassport,
-                  whatsappNumber: guest.whatsappNumber
-                }
-                return generateGuestId(summary)
-              }
-            )
-          })
-        ),
-        voucherCode: appliedVoucher.value?.code,
-        customers: guestForm.value.guests.map((guest, index) => ({
-          gender: guest.gender || 'Mr',
-          name: guest.fullNameAsPerPassport,
-          whatsappNumber: guest.whatsappNumber || '',
-          nik: 0,
-          email: guest.email || '',
-          primaryGuest: index === 0
-        }))
-      }
-
-      console.log('CC Payment Data:', paymentData)
-
-      // Process the payment through the component, passing payment data
-      const response
-        = await stepPaymentRef.value.processPayment(paymentData)
-
-      if (response && response.meta.status && response.data.redirect) {
-        // Show loading modal with redirect
-        paymentModalInvoiceId.value = response.data.invoice
-        paymentModalRedirectUrl.value = response.data.redirect
-        showPaymentLoadingModal.value = true
-        paymentResponse.value = response
-
-        console.log('Response:', response.data.redirect)
-      } else {
-        console.error('CC Payment failed:', response?.meta.message)
-        alert(
-          'Gagal memproses pembayaran. '
-          + (response?.meta.message || 'Silakan coba lagi.')
-        )
-      }
-    } catch (error) {
-      console.error('CC Payment error:', error)
-    } finally {
-      bookingLoading.value = false
-    }
-    return
-  }
-
-  // For virtual account, proceed with existing logic
-  if (
-    bookingStep.value.selectedPackages.length === 0
-    || !bookingStep.value.selectedPaymentMethod
-  ) {
-    console.error(
-      'Validation failed - Packages:',
-      bookingStep.value.selectedPackages.length > 0,
-      'Payment Method:',
-      !!bookingStep.value.selectedPaymentMethod
-    )
-    return
-  }
-
-  bookingLoading.value = true
-
-  try {
-    const bookingData: IBookingConfirmation = {
-      tripScheduleUid: bookingId.value,
-      package: bookingStep.value.selectedPackages.map(selection => ({
+const formData = computed(() => {
+  return {
+    tripScheduleUid: bookingId.value,
+    package: bookingStep.value.selectedPackages.map(
+      selection => ({
         uid: selection.packageUid,
         quantity: selection.quantity
-      })),
-      extraPackage: bookingStep.value.selectedExtraPackages.map(
-        selection => ({
-          uid: selection.packageUid,
-          quantity: selection.selectedGuestIndexes.length,
-          guest: selection.selectedGuestIndexes.reduce<string[]>(
-            (acc, guestIndex) => {
-              const guest = guestForm.value.guests[guestIndex]
-              if (!guest) return acc
-
-              const summary: GuestSummary = {
-                fullNameAsPerPassport:
-                  guest.fullNameAsPerPassport,
-                whatsappNumber: guest.whatsappNumber
-              }
-
-              acc.push(generateGuestId(summary))
-
-              return acc
-            },
-            []
-          )
-        })
-      ),
-      voucherCode: appliedVoucher.value?.code,
-      customers: guestForm.value.guests.map((guest, index) => ({
-        gender: guest.gender,
-        name: guest.fullNameAsPerPassport,
-        whatsappNumber: guest.whatsappNumber,
-        nik: 0, // Default value as per requirement
-        email: guest.email || '', // Email only for primary guest
-        primaryGuest: index === 0
-      })),
-      paidOff: fullPayment.value,
-      bankCode: bookingStep.value.selectedPaymentMethod.code
-    }
-
-    console.log('VA Payment Data:', bookingData)
-
-    // Send request to create-payment API
-    const response = await $fetch<IPaymentResponse>(
-      `${baseUrl}/Booking/create-payment.va`,
-      {
-        method: 'POST',
-        body: bookingData
-      }
-    )
-
-    // Store payment response and show success dialog
-    paymentResponse.value = response
-    showSuccessDialog.value = true
-  } catch (error) {
-    // TODO: Handle booking error (show error message to user)
-    console.error('Booking confirmation failed:', error)
-  } finally {
-    bookingLoading.value = false
+      })
+    ),
+    extraPackage: bookingStep.value.selectedExtraPackages.map(
+      selection => ({
+        uid: selection.packageUid,
+        quantity: selection.selectedGuestIndexes.length,
+        guest: selection.selectedGuestIndexes.map(
+          (guestIndex) => {
+            const guest
+              = guestForm.value.guests[guestIndex]
+            if (!guest) return ''
+            const summary: GuestSummary = {
+              fullNameAsPerPassport:
+                guest.fullNameAsPerPassport,
+              whatsappNumber: guest.whatsappNumber
+            }
+            return generateGuestId(summary)
+          }
+        )
+      })
+    ),
+    paidOff: fullPayment.value,
+    voucherCode: appliedVoucher.value?.code,
+    customers: guestForm.value.guests.map((guest, index) => ({
+      gender: guest.gender || 'Mr',
+      name: guest.fullNameAsPerPassport,
+      whatsappNumber: guest.whatsappNumber || '',
+      nik: 0,
+      email: guest.email || '',
+      primaryGuest: index === 0
+    }))
   }
+})
+
+const confirmBooking = async () => {
+  cardPaymentRef.value.submitPayment()
 }
+
+// Confirm booking with proper parameter structure
+// const confirmBooking = async () => {
+//   // For credit card payment
+//   if (selectedPaymentType.value === 'credit_card') {
+//     // Process payment using the component's method
+//     if (!stepPaymentRef.value) {
+//       console.error('StepPayment component not found')
+//       return
+//     }
+
+//     // Validate that all required data is present
+//     if (!bookingId.value) {
+//       console.error('Trip schedule UID is empty')
+//       return
+//     }
+
+//     if (bookingStep.value.selectedPackages.length === 0) {
+//       console.error('No packages selected')
+//       return
+//     }
+
+//     if (guestForm.value.guests.length === 0) {
+//       console.error('No guests added')
+//       return
+//     }
+
+//     bookingLoading.value = true
+
+//     try {
+//       // Build payment data
+//       const paymentData = {
+//         tripScheduleUid: bookingId.value,
+//         package: bookingStep.value.selectedPackages.map(
+//           selection => ({
+//             uid: selection.packageUid,
+//             quantity: selection.quantity
+//           })
+//         ),
+//         extraPackage: bookingStep.value.selectedExtraPackages.map(
+//           selection => ({
+//             uid: selection.packageUid,
+//             quantity: selection.selectedGuestIndexes.length,
+//             guest: selection.selectedGuestIndexes.map(
+//               (guestIndex) => {
+//                 const guest
+//                   = guestForm.value.guests[guestIndex]
+//                 if (!guest) return ''
+//                 const summary: GuestSummary = {
+//                   fullNameAsPerPassport:
+//                     guest.fullNameAsPerPassport,
+//                   whatsappNumber: guest.whatsappNumber
+//                 }
+//                 return generateGuestId(summary)
+//               }
+//             )
+//           })
+//         ),
+//         voucherCode: appliedVoucher.value?.code,
+//         customers: guestForm.value.guests.map((guest, index) => ({
+//           gender: guest.gender || 'Mr',
+//           name: guest.fullNameAsPerPassport,
+//           whatsappNumber: guest.whatsappNumber || '',
+//           nik: 0,
+//           email: guest.email || '',
+//           primaryGuest: index === 0
+//         }))
+//       }
+
+//       console.log('CC Payment Data:', paymentData)
+
+//       // Process the payment through the component, passing payment data
+//       const response
+//         = await stepPaymentRef.value.processPayment(paymentData)
+
+//       if (response && response.meta.status && response.data.redirect) {
+//         // Show loading modal with redirect
+//         paymentModalInvoiceId.value = response.data.invoice
+//         paymentModalRedirectUrl.value = response.data.redirect
+//         showPaymentLoadingModal.value = true
+//         paymentResponse.value = response
+
+//         console.log('Response:', response.data.redirect)
+//       } else {
+//         console.error('CC Payment failed:', response?.meta.message)
+//         alert(
+//           'Gagal memproses pembayaran. '
+//           + (response?.meta.message || 'Silakan coba lagi.')
+//         )
+//       }
+//     } catch (error) {
+//       console.error('CC Payment error:', error)
+//     } finally {
+//       bookingLoading.value = false
+//     }
+//     return
+//   }
+
+//   // For virtual account, proceed with existing logic
+//   if (
+//     bookingStep.value.selectedPackages.length === 0
+//     || !bookingStep.value.selectedPaymentMethod
+//   ) {
+//     console.error(
+//       'Validation failed - Packages:',
+//       bookingStep.value.selectedPackages.length > 0,
+//       'Payment Method:',
+//       !!bookingStep.value.selectedPaymentMethod
+//     )
+//     return
+//   }
+
+//   bookingLoading.value = true
+
+//   try {
+//     const bookingData: IBookingConfirmation = {
+//       tripScheduleUid: bookingId.value,
+//       package: bookingStep.value.selectedPackages.map(selection => ({
+//         uid: selection.packageUid,
+//         quantity: selection.quantity
+//       })),
+//       extraPackage: bookingStep.value.selectedExtraPackages.map(
+//         selection => ({
+//           uid: selection.packageUid,
+//           quantity: selection.selectedGuestIndexes.length,
+//           guest: selection.selectedGuestIndexes.reduce<string[]>(
+//             (acc, guestIndex) => {
+//               const guest = guestForm.value.guests[guestIndex]
+//               if (!guest) return acc
+
+//               const summary: GuestSummary = {
+//                 fullNameAsPerPassport:
+//                   guest.fullNameAsPerPassport,
+//                 whatsappNumber: guest.whatsappNumber
+//               }
+
+//               acc.push(generateGuestId(summary))
+
+//               return acc
+//             },
+//             []
+//           )
+//         })
+//       ),
+//       voucherCode: appliedVoucher.value?.code,
+//       customers: guestForm.value.guests.map((guest, index) => ({
+//         gender: guest.gender,
+//         name: guest.fullNameAsPerPassport,
+//         whatsappNumber: guest.whatsappNumber,
+//         nik: 0, // Default value as per requirement
+//         email: guest.email || '', // Email only for primary guest
+//         primaryGuest: index === 0
+//       })),
+//       paidOff: fullPayment.value,
+//       bankCode: bookingStep.value.selectedPaymentMethod.code
+//     }
+
+//     console.log('VA Payment Data:', bookingData)
+
+//     // Send request to create-payment API
+//     const response = await $fetch<IPaymentResponse>(
+//       `${baseUrl}/Booking/create-payment.va`,
+//       {
+//         method: 'POST',
+//         body: bookingData
+//       }
+//     )
+
+//     // Store payment response and show success dialog
+//     paymentResponse.value = response
+//     showSuccessDialog.value = true
+//   } catch (error) {
+//     // TODO: Handle booking error (show error message to user)
+//     console.error('Booking confirmation failed:', error)
+//   } finally {
+//     bookingLoading.value = false
+//   }
+// }
 
 // Guest management functions are now handled automatically by watchEffect based on package quantity
 
@@ -827,11 +873,12 @@ const isStepValid = (step: number) => {
       return true // Extra packages are optional
     case 4:
       // For credit card, component handles its own validation
-      if (selectedPaymentType.value === 'credit_card') {
-        return true // Payment method component will validate before token generation
-      }
-      // For virtual account, check if a payment method is selected
-      return !!bookingStep.value.selectedPaymentMethod
+      // if (selectedPaymentType.value === 'credit_card') {
+      //   return true // Payment method component will validate before token generation
+      // }
+      // // For virtual account, check if a payment method is selected
+      // return !!bookingStep.value.selectedPaymentMethod
+      return cardPaymentRef.value?.canSubmit || false
     default:
       return false
   }
@@ -1029,7 +1076,13 @@ useHead({
                 :guest-email="guestForm.guests[0]?.email || ''"
                 :guest-phone-number="guestForm.guests[0]?.whatsappNumber || ''
                 "
-              />
+              >
+                <CardPayment
+                  ref="cardPaymentRef"
+                  :form-data="formData"
+                  type-payment="booking"
+                />
+              </BookStepPayment>
             </template>
           </div>
         </div>

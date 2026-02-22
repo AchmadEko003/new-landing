@@ -85,7 +85,16 @@ interface IPaymentStatus {
 const { data: paymentData, pending: paymentPending, error: paymentError } = await useLazyFetch<IResponse<IPaymentDetail>>(
   `${baseUrl}/Payment/detail/${uid.value}`,
   {
-    key: `payment-detail-${uid.value}`
+    key: `payment-detail-${uid.value}`,
+    onResponse({ response }) {
+      if (response._data) {
+        const data = response._data as IResponse<IPaymentDetail>
+
+        if (data.data?.status === 'PAID') {
+          router.push({ path: '/payment', query: { invoice: data.data?.invoiceNumber || undefined, status: 'success', trip: data.data?.tripName || undefined } })
+        }
+      }
+    }
   }
 )
 
@@ -114,7 +123,7 @@ const paymentStatus = ref<string>('UNPAID')
 const statusCheckInterval = ref<ReturnType<typeof setInterval> | null>(null)
 
 const currentPaymentStatus = computed(() => paymentData.value?.data?.status || 'UNPAID')
-const canShowPaymentMethod = computed(() => currentPaymentStatus.value === 'UNPAID')
+const canShowPaymentMethod = computed(() => currentPaymentStatus.value === 'UNPAID' || currentPaymentStatus.value === 'EXPIRED')
 
 const paymentStatusConfig = computed(() => {
   const status = currentPaymentStatus.value
@@ -619,8 +628,14 @@ useHead({
             </div>
           </UCard>
 
+          <CardPayment
+            v-if="canShowPaymentMethod"
+            :form-data="{ uid }"
+            type-payment="payment"
+          />
+
           <!-- Payment Method Selection Card -->
-          <UCard v-if="canShowPaymentMethod">
+          <!-- <UCard v-if="canShowPaymentMethod">
             <template #header>
               <h2 class="text-xl font-semibold">
                 Pilih Metode Pembayaran
@@ -628,9 +643,7 @@ useHead({
             </template>
 
             <div class="space-y-6">
-              <!-- Payment Method Selection Buttons -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Virtual Account Button -->
                 <button
                   :class="[
                     'group relative p-8 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-4 min-h-[160px] overflow-hidden',
@@ -640,7 +653,6 @@ useHead({
                   ]"
                   @click="switchPaymentType('virtual_account')"
                 >
-                  <!-- Background Pattern -->
                   <div
                     :class="[
                       'absolute inset-0 opacity-5 transition-opacity duration-300',
@@ -651,7 +663,6 @@ useHead({
                     <div class="absolute bottom-0 left-0 w-24 h-24 bg-primary rounded-full blur-2xl" />
                   </div>
 
-                  <!-- Selected Badge -->
                   <div
                     v-if="selectedPaymentType === 'virtual_account'"
                     class="absolute top-3 right-3 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg animate-in fade-in zoom-in duration-300"
@@ -663,7 +674,6 @@ useHead({
                   </div>
 
                   <div class="relative z-10 flex flex-col items-center gap-4">
-                    <!-- Icon Container -->
                     <div
                       :class="[
                         'w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300',
@@ -682,8 +692,6 @@ useHead({
                         ]"
                       />
                     </div>
-
-                    <!-- Text -->
                     <div class="text-center">
                       <div
                         :class="[
@@ -709,7 +717,6 @@ useHead({
                   </div>
                 </button>
 
-                <!-- Credit Card Button -->
                 <button
                   :class="[
                     'group relative p-8 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-4 min-h-[160px] overflow-hidden',
@@ -719,7 +726,6 @@ useHead({
                   ]"
                   @click="switchPaymentType('credit_card')"
                 >
-                  <!-- Background Pattern -->
                   <div
                     :class="[
                       'absolute inset-0 opacity-5 transition-opacity duration-300',
@@ -730,7 +736,6 @@ useHead({
                     <div class="absolute bottom-0 right-0 w-24 h-24 bg-primary rounded-full blur-2xl" />
                   </div>
 
-                  <!-- Selected Badge -->
                   <div
                     v-if="selectedPaymentType === 'credit_card'"
                     class="absolute top-3 right-3 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg animate-in fade-in zoom-in duration-300"
@@ -742,7 +747,6 @@ useHead({
                   </div>
 
                   <div class="relative z-10 flex flex-col items-center gap-4">
-                    <!-- Icon Container -->
                     <div
                       :class="[
                         'w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300',
@@ -762,7 +766,6 @@ useHead({
                       />
                     </div>
 
-                    <!-- Text -->
                     <div class="text-center">
                       <div
                         :class="[
@@ -789,7 +792,6 @@ useHead({
                 </button>
               </div>
 
-              <!-- Virtual Account Section -->
               <div
                 v-if="selectedPaymentType === 'virtual_account'"
                 class="space-y-5 pt-2"
@@ -838,7 +840,6 @@ useHead({
                     ]"
                     @click="selectBank(bank)"
                   >
-                    <!-- Selected Badge -->
                     <div
                       v-if="selectedBank?.code === bank.code"
                       class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-lg"
@@ -882,7 +883,6 @@ useHead({
                 </div>
               </div>
 
-              <!-- Credit Card Section -->
               <div
                 v-if="selectedPaymentType === 'credit_card'"
                 class="space-y-5 pt-2"
@@ -922,7 +922,6 @@ useHead({
                 </div>
 
                 <div class="space-y-4">
-                  <!-- Cardholder Name -->
                   <div>
                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                       <UIcon
@@ -943,8 +942,6 @@ useHead({
                       Sesuai yang tertera pada kartu
                     </p>
                   </div>
-
-                  <!-- Card Number -->
                   <div>
                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                       <UIcon
@@ -964,8 +961,6 @@ useHead({
                       16 digit nomor kartu kredit
                     </p>
                   </div>
-
-                  <!-- Expiry and CVV -->
                   <div class="grid grid-cols-2 gap-4">
                     <div>
                       <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
@@ -1009,8 +1004,6 @@ useHead({
                   </div>
                 </div>
               </div>
-
-              <!-- Proceed Button -->
               <div
                 v-if="selectedPaymentType"
                 class="pt-4 border-t"
@@ -1031,7 +1024,7 @@ useHead({
                 </UButton>
               </div>
             </div>
-          </UCard>
+          </UCard> -->
         </div>
       </div>
     </section>

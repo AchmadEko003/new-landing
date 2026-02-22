@@ -573,22 +573,24 @@ defineExpose({
 
     <USeparator />
 
-    <h4 class="font-bold text-lg mb-4">
+    <!-- <h4 class="font-bold text-lg mb-4">
       Pilih Metode Pembayaran
-    </h4>
+    </h4> -->
 
-    <div
+    <!-- <div
       v-if="props.vaListPending"
       class="flex justify-center py-8"
     >
       <span class="text-gray-500">Loading payment methods...</span>
-    </div>
+    </div> -->
 
+    v-else
     <div
-      v-else
       class="space-y-6"
     >
-      <div class="grid grid-cols-2 gap-4">
+      <slot />
+
+      <!-- <div class="grid grid-cols-2 gap-4">
         <div
           :class="[
             'border rounded-xl p-4 cursor-pointer transition-colors duration-200 text-center',
@@ -642,7 +644,6 @@ defineExpose({
         v-if="selectedPaymentType === 'credit_card'"
         class="bg-gradient-to-br from-blue-50 via-white to-green-50 rounded-2xl p-8 space-y-6 border border-blue-100 shadow-lg"
       >
-        <!-- Security Info Box -->
         <div class="bg-green-100/30 border border-green-300 rounded-xl p-4 backdrop-blur-sm">
           <div class="flex items-start gap-3">
             <div class="flex-shrink-0 mt-0.5">
@@ -669,7 +670,6 @@ defineExpose({
           </div>
         </div>
 
-        <!-- Error Message -->
         <div
           v-if="errorMessage"
           class="bg-red-50 border border-red-300 rounded-xl p-4"
@@ -692,7 +692,6 @@ defineExpose({
           </div>
         </div>
 
-        <!-- Success Message -->
         <div
           v-if="successMessage"
           class="bg-green-50 border border-green-300 rounded-xl p-4"
@@ -715,7 +714,6 @@ defineExpose({
           </div>
         </div>
 
-        <!-- Card Holder Name -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">
             Nama Pemegang Kartu
@@ -732,7 +730,6 @@ defineExpose({
           </p>
         </div>
 
-        <!-- Card Number -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">
             Nomor Kartu Kredit
@@ -761,7 +758,6 @@ defineExpose({
           </p>
         </div>
 
-        <!-- Expiry Date and CVV -->
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -799,7 +795,6 @@ defineExpose({
           </div>
         </div>
 
-        <!-- Info Box -->
         <div class="bg-blue-50 border border-blue-300 rounded-xl p-4 backdrop-blur-sm">
           <div class="flex items-start gap-3">
             <svg
@@ -849,7 +844,7 @@ defineExpose({
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

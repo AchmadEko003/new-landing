@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BookingData, IPaymentMethod, IPaymentResponse } from '~~/shared/interface/IDetailBook'
+import type { BookingData, Guest, IPaymentMethod, IPaymentResponse } from '~~/shared/interface/IDetailBook'
 import type { IResponse } from '~~/shared/interface/IResponse'
 import type { IVaListResponse } from '~~/shared/interface/IVaList'
 import { formatCurrency } from '~~/shared/script/currency'
@@ -484,6 +484,51 @@ const handlePaymentError = (error: string) => {
     color: 'error'
   })
 }
+
+const formatGuestId = (whatsappNumber: string, name: string): string => {
+  const last4Digits = whatsappNumber.slice(-4)
+  const first3Letters = name.substring(0, 3).toUpperCase()
+  return `${last4Digits}${first3Letters}`
+}
+
+const formData = computed(() => {
+  const extraPackage: Array<{
+    uid: string
+    quantity: number
+    guest: string[]
+  }> = []
+
+  packageGuestSelections.value?.forEach((guestSet, uid) => {
+    const lockedSet = lockedSelections.value.get(uid) || new Set()
+    const nonLockedGuests = [...guestSet].filter(i => !lockedSet.has(i))
+
+    if (nonLockedGuests.length > 0) {
+      const guestIds = nonLockedGuests.map((i) => {
+        const guest = bookingData.value?.guest[i]
+        return formatGuestId(
+          guest?.whatsapp_number || guest?.whatsappNumber || '',
+          guest?.name || ''
+        )
+      })
+
+      extraPackage.push({
+        uid,
+        quantity: guestIds.length,
+        guest: guestIds
+      })
+    }
+  })
+
+  return {
+    customers: bookingData.value?.guest.map((guest: Guest) => ({
+      name: guest.name,
+      whatsappNumber: guest.whatsapp_number || guest.whatsappNumber || '',
+      gender: guest.gender
+    })) || [],
+    extraPackage: extraPackage,
+    bookNumber: bookingData.value?.noPesanan || ''
+  }
+})
 </script>
 
 <template>
@@ -494,7 +539,6 @@ const handlePaymentError = (error: string) => {
       <div
         class="container mx-auto px-4 max-w-4xl"
       >
-      <!-- <CardPayment /> -->
         <!-- Header -->
         <div class="text-center mb-8">
           <h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -736,6 +780,8 @@ const handlePaymentError = (error: string) => {
             @payment-success="handlePaymentSuccess"
             @payment-error="handlePaymentError"
           />
+
+          <CardPayment :form-data="formData" type-payment="additional" />
         </div>
       </div>
 
