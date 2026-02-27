@@ -584,7 +584,6 @@ defineExpose({
       <span class="text-gray-500">Loading payment methods...</span>
     </div> -->
 
-    v-else
     <div
       class="space-y-6"
     >
