@@ -29,6 +29,18 @@ const { data, error, pending } = await useLazyFetch<IResponseList<ICountry>>(
   }
 )
 
+useSeoMeta({
+  title: 'Destinasi Populer - Peponi',
+  description: 'Jelajahi destinasi populer dunia bersama Peponi Travel. Temukan petualangan unik di berbagai negara dengan pengalaman lokal yang autentik.',
+  ogTitle: 'Destinasi Populer - Peponi',
+  ogDescription: 'Jelajahi destinasi populer dunia bersama Peponi Travel. Temukan petualangan unik di berbagai negara dengan pengalaman lokal yang autentik.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Destinasi Populer - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Destinasi Populer - Peponi',
+  twitterDescription: 'Jelajahi destinasi populer dunia bersama Peponi Travel. Temukan petualangan unik di berbagai negara dengan pengalaman lokal yang autentik.'
+})
+
 const reformattedData = computed(() => {
   if (data.value === null && data.value === undefined) {
     return []

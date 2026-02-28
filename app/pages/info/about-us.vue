@@ -309,6 +309,18 @@ useHead({
   ]
 })
 
+useSeoMeta({
+  title: 'Tentang Kami - Peponi',
+  description: 'Pelajari lebih lanjut tentang Peponi Travel. Kami adalah pionir perjalanan seperti orang lokal pertama di Indonesia, telah melayani lebih dari 5.000 traveler.',
+  ogTitle: 'Tentang Kami - Peponi',
+  ogDescription: 'Pelajari lebih lanjut tentang Peponi Travel. Kami adalah pionir perjalanan seperti orang lokal pertama di Indonesia, telah melayani lebih dari 5.000 traveler.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Tentang Kami - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Tentang Kami - Peponi',
+  twitterDescription: 'Pelajari lebih lanjut tentang Peponi Travel. Kami adalah pionir perjalanan seperti orang lokal pertama di Indonesia, telah melayani lebih dari 5.000 traveler.'
+})
+
 // Values data
 const values = [
   {

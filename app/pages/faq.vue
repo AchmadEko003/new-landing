@@ -15,6 +15,18 @@ useHead({
     { name: 'description', content: 'Pertanyaan yang sering diajukan tentang layanan perjalanan Peponi. Temukan jawaban untuk berbagai pertanyaan seputar reservasi, pembayaran, dan layanan kami.' }
   ]
 })
+
+useSeoMeta({
+  title: 'FAQ - Peponi',
+  description: 'Pertanyaan yang sering diajukan tentang layanan perjalanan Peponi. Temukan jawaban untuk berbagai pertanyaan seputar reservasi, pembayaran, dan layanan kami.',
+  ogTitle: 'FAQ - Peponi',
+  ogDescription: 'Pertanyaan yang sering diajukan tentang layanan perjalanan Peponi. Temukan jawaban untuk berbagai pertanyaan seputar reservasi, pembayaran, dan layanan kami.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'FAQ - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'FAQ - Peponi',
+  twitterDescription: 'Pertanyaan yang sering diajukan tentang layanan perjalanan Peponi. Temukan jawaban untuk berbagai pertanyaan seputar reservasi, pembayaran, dan layanan kami.'
+})
 </script>
 
 <template>

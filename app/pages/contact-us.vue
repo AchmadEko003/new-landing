@@ -188,6 +188,18 @@ useHead({
   ]
 })
 
+useSeoMeta({
+  title: 'Hubungi Kami - Peponi',
+  description: 'Hubungi tim Peponi untuk konsultasi perjalanan, bantuan booking, atau pertanyaan seputar layanan travel kami.',
+  ogTitle: 'Hubungi Kami - Peponi',
+  ogDescription: 'Hubungi tim Peponi untuk konsultasi perjalanan, bantuan booking, atau pertanyaan seputar layanan travel kami.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Hubungi Kami - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Hubungi Kami - Peponi',
+  twitterDescription: 'Hubungi tim Peponi untuk konsultasi perjalanan, bantuan booking, atau pertanyaan seputar layanan travel kami.'
+})
+
 // Form state
 const form = ref({
   firstName: '',

@@ -12,6 +12,18 @@ const { data, pending, error } = await useLazyFetch<IResponse<IAboutUs>>(
   `${baseUrl}/AboutUs/${slug}`
 )
 
+useSeoMeta({
+  title: () => data.value?.data?.header ? `${data.value.data.header} - Informasi - Peponi` : 'Informasi - Peponi',
+  description: 'Informasi lengkap dari Peponi Travel. Temukan semua detail yang Anda butuhkan.',
+  ogTitle: () => data.value?.data?.header ? `${data.value.data.header} - Informasi - Peponi` : 'Informasi - Peponi',
+  ogDescription: 'Informasi lengkap dari Peponi Travel. Temukan semua detail yang Anda butuhkan.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: () => data.value?.data?.header || 'Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => data.value?.data?.header ? `${data.value.data.header} - Informasi - Peponi` : 'Informasi - Peponi',
+  twitterDescription: 'Informasi lengkap dari Peponi Travel. Temukan semua detail yang Anda butuhkan.'
+})
+
 // Utility function
 // const formatDate = (date: Date) => {
 //   return new Intl.DateTimeFormat('id-ID', {

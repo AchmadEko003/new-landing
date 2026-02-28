@@ -11,6 +11,16 @@ const route = useRoute()
 const toast = useToast()
 const baseUrl = useRuntimeConfig().public.apiBase
 
+useSeoMeta({
+  title: 'Detail Booking - Peponi',
+  description: 'Cek dan kelola detail booking trip Anda bersama Peponi Travel.',
+  ogTitle: 'Detail Booking - Peponi',
+  ogDescription: 'Cek dan kelola detail booking trip Anda bersama Peponi Travel.',
+  twitterCard: 'summary',
+  twitterTitle: 'Detail Booking - Peponi',
+  twitterDescription: 'Cek dan kelola detail booking trip Anda bersama Peponi Travel.'
+})
+
 // Responsive
 const { width } = useWindowSize()
 const computedWidth = computed(() => width.value || 0)

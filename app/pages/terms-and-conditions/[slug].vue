@@ -15,6 +15,18 @@ useHead({
   ]
 })
 
+useSeoMeta({
+  title: () => data.value?.data?.header ? `${data.value.data.header} - Syarat & Ketentuan - Peponi` : `${slug} - Syarat & Ketentuan - Peponi`,
+  description: 'Detail syarat dan ketentuan penggunaan layanan Peponi Travel.',
+  ogTitle: () => data.value?.data?.header ? `${data.value.data.header} - Syarat & Ketentuan - Peponi` : `${slug} - Syarat & Ketentuan - Peponi`,
+  ogDescription: 'Detail syarat dan ketentuan penggunaan layanan Peponi Travel.',
+  ogImage: () => backgroundImageUrl.value,
+  ogImageAlt: () => data.value?.data?.header || slug,
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => data.value?.data?.header ? `${data.value.data.header} - Syarat & Ketentuan - Peponi` : `${slug} - Syarat & Ketentuan - Peponi`,
+  twitterDescription: 'Detail syarat dan ketentuan penggunaan layanan Peponi Travel.'
+})
+
 // Background image mapping based on slug
 const backgroundImageUrl = computed(() => {
   const imageMap: Record<string, string> = {

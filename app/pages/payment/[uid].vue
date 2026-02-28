@@ -12,6 +12,16 @@ const baseUrl = useRuntimeConfig().public.apiBase
 // Get uid from route
 const uid = computed(() => route.params.uid as string)
 
+useSeoMeta({
+  title: 'Pembayaran - Peponi',
+  description: 'Selesaikan pembayaran booking trip Anda bersama Peponi Travel.',
+  ogTitle: 'Pembayaran - Peponi',
+  ogDescription: 'Selesaikan pembayaran booking trip Anda bersama Peponi Travel.',
+  twitterCard: 'summary',
+  twitterTitle: 'Pembayaran - Peponi',
+  twitterDescription: 'Selesaikan pembayaran booking trip Anda bersama Peponi Travel.'
+})
+
 // Indonesian month names
 const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des']
 const monthsFull = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']

@@ -41,6 +41,16 @@ const {
 
 const booking = computed(() => bookingData.value?.data)
 
+useSeoMeta({
+  title: 'Booking Trip - Peponi',
+  description: 'Selesaikan proses booking trip Anda bersama Peponi Travel. Pilih paket, isi data tamu, dan lakukan pembayaran dengan aman.',
+  ogTitle: 'Booking Trip - Peponi',
+  ogDescription: 'Selesaikan proses booking trip Anda bersama Peponi Travel.',
+  twitterCard: 'summary',
+  twitterTitle: 'Booking Trip - Peponi',
+  twitterDescription: 'Selesaikan proses booking trip Anda bersama Peponi Travel.'
+})
+
 // Extended booking step to allow custom payment method type and multiple package selection
 interface ExtendedBookingStep extends Omit<
   IBookingStep,

@@ -12,6 +12,18 @@ useHead({
   ]
 })
 
+useSeoMeta({
+  title: 'Informasi - Peponi',
+  description: 'Informasi lengkap tentang Peponi Travel dan layanan perjalanan kami.',
+  ogTitle: 'Informasi - Peponi',
+  ogDescription: 'Informasi lengkap tentang Peponi Travel dan layanan perjalanan kami.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Informasi - Peponi',
+  twitterDescription: 'Informasi lengkap tentang Peponi Travel dan layanan perjalanan kami.'
+})
+
 const router = useRouter()
 
 // Fetch data

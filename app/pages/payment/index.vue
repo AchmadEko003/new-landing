@@ -88,6 +88,16 @@ useHead({
     { name: 'description', content: 'Status pembayaran Anda di Peponi Travel.' }
   ]
 })
+
+useSeoMeta({
+  title: () => `${statusConfig.value.title} - Peponi`,
+  description: 'Status pembayaran Anda di Peponi Travel.',
+  ogTitle: () => `${statusConfig.value.title} - Peponi`,
+  ogDescription: 'Status pembayaran Anda di Peponi Travel.',
+  twitterCard: 'summary',
+  twitterTitle: () => `${statusConfig.value.title} - Peponi`,
+  twitterDescription: 'Status pembayaran Anda di Peponi Travel.'
+})
 </script>
 
 <template>

@@ -16,6 +16,18 @@ useHead({
     { name: 'description', content: 'Syarat dan ketentuan penggunaan layanan Peponi Travel. Baca peraturan dan kebijakan kami sebelum melakukan pemesanan trip.' }
   ]
 })
+
+useSeoMeta({
+  title: 'Syarat & Ketentuan - Peponi',
+  description: 'Syarat dan ketentuan penggunaan layanan Peponi Travel. Baca peraturan dan kebijakan kami sebelum melakukan pemesanan trip.',
+  ogTitle: 'Syarat & Ketentuan - Peponi',
+  ogDescription: 'Syarat dan ketentuan penggunaan layanan Peponi Travel. Baca peraturan dan kebijakan kami sebelum melakukan pemesanan trip.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Syarat & Ketentuan - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Syarat & Ketentuan - Peponi',
+  twitterDescription: 'Syarat dan ketentuan penggunaan layanan Peponi Travel. Baca peraturan dan kebijakan kami sebelum melakukan pemesanan trip.'
+})
 </script>
 
 <template>

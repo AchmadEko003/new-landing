@@ -119,6 +119,16 @@ const route = useRoute()
 const config = useRuntimeConfig().public.apiBase
 const uid = computed(() => route.params.uid as string)
 
+useSeoMeta({
+  title: 'Pembatalan Pesanan - Peponi',
+  description: 'Konfirmasi pembatalan pesanan trip Anda bersama Peponi Travel.',
+  ogTitle: 'Pembatalan Pesanan - Peponi',
+  ogDescription: 'Konfirmasi pembatalan pesanan trip Anda bersama Peponi Travel.',
+  twitterCard: 'summary',
+  twitterTitle: 'Pembatalan Pesanan - Peponi',
+  twitterDescription: 'Konfirmasi pembatalan pesanan trip Anda bersama Peponi Travel.'
+})
+
 const apiUrl = `${config}/Booking/cancel.order.confirm`
 
 const { data, status, error, execute } = useFetch<IResponse<null>>(apiUrl, {

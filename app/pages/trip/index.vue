@@ -102,6 +102,18 @@ useHead({
     { name: 'description', content: 'Jelajahi berbagai pilihan trip menarik dari Peponi Travel. Temukan petualangan impianmu di destinasi terbaik dunia.' }
   ]
 })
+
+useSeoMeta({
+  title: 'Trip - Peponi Travel',
+  description: 'Jelajahi berbagai pilihan trip menarik dari Peponi Travel. Temukan petualangan impianmu di destinasi terbaik dunia.',
+  ogTitle: 'Trip - Peponi Travel',
+  ogDescription: 'Jelajahi berbagai pilihan trip menarik dari Peponi Travel. Temukan petualangan impianmu di destinasi terbaik dunia.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Trip - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Trip - Peponi Travel',
+  twitterDescription: 'Jelajahi berbagai pilihan trip menarik dari Peponi Travel. Temukan petualangan impianmu di destinasi terbaik dunia.'
+})
 </script>
 
 <template>

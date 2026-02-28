@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reformattedCountryDetail } from '~/composables/country/formatToImage'
+import { setImageBaseUrlForSeo } from '~~/shared/script/set-baseUrl-image-seo'
 import type {
   ICountryDetail
 } from '~~/shared/interface/ICountry'
@@ -37,6 +38,20 @@ const sections = [
   { id: 'favorite-section', title: 'Tempat Favorit' },
   { id: 'experience-section', title: 'Pengalaman Unik' }
 ]
+
+useSeoMeta({
+  title: () => detailData.value?.data?.name ? `${detailData.value.data.name} - Destinasi Populer - Peponi` : 'Destinasi Populer - Peponi',
+  description: () => detailData.value?.data?.summary || 'Jelajahi destinasi populer dunia bersama Peponi Travel. Temukan petualangan unik dengan pengalaman lokal yang autentik.',
+  ogTitle: () => detailData.value?.data?.name ? `${detailData.value.data.name} - Destinasi Populer - Peponi` : 'Destinasi Populer - Peponi',
+  ogDescription: () => detailData.value?.data?.summary || 'Jelajahi destinasi populer dunia bersama Peponi Travel. Temukan petualangan unik dengan pengalaman lokal yang autentik.',
+  ogImage: () => detailData.value?.data?.bannerName ? setImageBaseUrlForSeo(`/country/${detailData.value.data.bannerName}.jpeg`) : undefined,
+  ogImageAlt: () => detailData.value?.data?.name || 'Destinasi Populer',
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => detailData.value?.data?.name ? `${detailData.value.data.name} - Destinasi Populer - Peponi` : 'Destinasi Populer - Peponi',
+  twitterDescription: () => detailData.value?.data?.summary || 'Jelajahi destinasi populer dunia bersama Peponi Travel. Temukan petualangan unik dengan pengalaman lokal yang autentik.',
+  twitterImage: () => detailData.value?.data?.bannerName ? setImageBaseUrlForSeo(`/country/${detailData.value.data.bannerName}.jpeg`) : undefined
+})
 </script>
 
 <template>

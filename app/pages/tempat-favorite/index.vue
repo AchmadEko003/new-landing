@@ -7,6 +7,18 @@ import type { IImage } from "~~/shared/interface/IImage";
 const baseUrl = useRuntimeConfig().public.apiBase;
 const { width } = useWindowSize();
 
+useSeoMeta({
+  title: 'Tempat Favorit - Peponi',
+  description: 'Temukan tempat favorit dan destinasi wisata populer bersama Peponi Travel. Eksplorasi lokasi wisata terbaik dengan pengalaman lokal yang autentik.',
+  ogTitle: 'Tempat Favorit - Peponi',
+  ogDescription: 'Temukan tempat favorit dan destinasi wisata populer bersama Peponi Travel. Eksplorasi lokasi wisata terbaik dengan pengalaman lokal yang autentik.',
+  ogImage: '/assets/peponi-og-image.png',
+  ogImageAlt: 'Tempat Favorit - Peponi Travel',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Tempat Favorit - Peponi',
+  twitterDescription: 'Temukan tempat favorit dan destinasi wisata populer bersama Peponi Travel. Eksplorasi lokasi wisata terbaik dengan pengalaman lokal yang autentik.'
+})
+
 const selectedCountryUid = ref<string | null>(null);
 
 const { data: countriesData } = await useLazyAsyncData(
