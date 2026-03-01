@@ -2,7 +2,7 @@ export interface IFavoriteLocation {
   uid: string
   name: string
   summary: string
-  banner: string
+  banner: string[]
 }
 
 export interface IFavoriteLocationDetailCountry {
